@@ -1,0 +1,416 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    :root {
+        --primary-color: #00954d; /* Access Bank green */
+        --secondary-color: #0033aa; /* Access Bank blue */
+        --accent-color: #ff7200; /* Access Bank orange */
+        --light-bg: #f9fafb;
+        --card-bg: #ffffff;
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+        --border-color: #e5e7eb;
+    }
+    
+    .dashboard-container {
+        padding-bottom: 80px;
+        padding-top: 20px;
+    }
+    
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 24px;
+        color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        transform: rotate(45deg);
+    }
+    
+    .bill-payment-card {
+        background-color: var(--card-bg);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .bill-category-selector {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+    
+    .bill-category {
+        flex: 1;
+        min-width: 100px;
+        background-color: var(--light-bg);
+        border-radius: 10px;
+        padding: 16px 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
+    }
+    
+    .bill-category:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .bill-category.active {
+        border-color: var(--primary-color);
+        background-color: rgba(0, 149, 77, 0.1);
+    }
+    
+    .bill-category i {
+        font-size: 24px;
+        margin-bottom: 8px;
+        color: var(--primary-color);
+    }
+    
+    .bill-category p {
+        margin-bottom: 0;
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+    
+    .form-floating {
+        margin-bottom: 16px;
+    }
+    
+    .form-floating > label {
+        color: var(--text-muted);
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(0, 149, 77, 0.25);
+    }
+    
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(0, 149, 77, 0.25);
+    }
+    
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        padding: 12px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-primary:hover {
+        background-color: #007a3e;
+        border-color: #007a3e;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .recent-payments {
+        background-color: var(--card-bg);
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .recent-payment-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .recent-payment-item:last-child {
+        border-bottom: none;
+    }
+    
+    .payment-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background-color: rgba(0, 149, 77, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+    }
+    
+    .payment-icon i {
+        color: var(--primary-color);
+    }
+    
+    .payment-details {
+        flex: 1;
+    }
+    
+    .payment-title {
+        font-weight: 600;
+        margin-bottom: 2px;
+        color: var(--text-dark);
+    }
+    
+    .payment-date {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+    
+    .payment-amount {
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+    
+    .back-link {
+        display: inline-block;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 20px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        background-color: #f3f4f6;
+        transition: all 0.2s ease;
+    }
+    
+    .back-link:hover {
+        background-color: #e5e7eb;
+        color: var(--secondary-color);
+    }
+</style>
+
+<div class="container dashboard-container">
+    <div class="page-header">
+        <h3 class="mb-0"><i class="fas fa-file-invoice-dollar me-2"></i> Bill Payment</h3>
+        <p class="mb-0 mt-2">Pay your bills quickly and securely</p>
+    </div>
+    
+    <div class="bill-payment-card">
+        <div class="bill-category-selector">
+            <div class="bill-category active" data-category="electricity">
+                <i class="fas fa-bolt"></i>
+                <p>Electricity</p>
+            </div>
+            <div class="bill-category" data-category="internet">
+                <i class="fas fa-wifi"></i>
+                <p>Internet</p>
+            </div>
+            <div class="bill-category" data-category="water">
+                <i class="fas fa-tint"></i>
+                <p>Water</p>
+            </div>
+            <div class="bill-category" data-category="tv">
+                <i class="fas fa-tv"></i>
+                <p>TV</p>
+            </div>
+            <div class="bill-category" data-category="tax">
+                <i class="fas fa-landmark"></i>
+                <p>Tax</p>
+            </div>
+            <div class="bill-category" data-category="other">
+                <i class="fas fa-ellipsis-h"></i>
+                <p>Other</p>
+            </div>
+        </div>
+        
+        <form method="post" id="bill-payment-form">
+            {% csrf_token %}
+            
+            <div class="form-floating mb-3">
+                <select class="form-select" id="provider" name="provider" required>
+                    <option value="" selected disabled>Select a provider</option>
+                    <option value="ikeja-electric">Ikeja Electric</option>
+                    <option value="eko-electric">Eko Electric</option>
+                    <option value="abuja-electric">Abuja Electric</option>
+                    <option value="ibadan-electric">Ibadan Electric</option>
+                    <option value="enugu-electric">Enugu Electric</option>
+                </select>
+                <label for="provider">Service Provider</label>
+            </div>
+            
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="account-number" name="account_number" placeholder="Enter account/meter number" required>
+                <label for="account-number">Account/Meter Number</label>
+            </div>
+            
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="customer-name" name="customer_name" placeholder="Enter customer name" required>
+                <label for="customer-name">Customer Name</label>
+            </div>
+            
+            <div class="form-floating mb-3">
+                <input type="tel" class="form-control" id="phone-number" name="phone_number" placeholder="Enter phone number" required>
+                <label for="phone-number">Phone Number</label>
+            </div>
+            
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter email address">
+                <label for="email">Email Address (Optional)</label>
+            </div>
+            
+            <div class="form-floating mb-4">
+                <input type="number" class="form-control" id="amount" name="amount" min="100" step="0.01" placeholder="Enter amount" required>
+                <label for="amount">Amount (₦)</label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-paper-plane me-2"></i>Pay Bill
+            </button>
+        </form>
+    </div>
+    
+    <div class="recent-payments">
+        <h5 class="mb-3">Recent Payments</h5>
+        
+        <div class="recent-payment-item">
+            <div class="payment-icon">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <div class="payment-details">
+                <h6 class="payment-title">Ikeja Electric</h6>
+                <p class="payment-date">May 15, 2025</p>
+            </div>
+            <div class="payment-amount">₦15,000</div>
+        </div>
+        
+        <div class="recent-payment-item">
+            <div class="payment-icon">
+                <i class="fas fa-tv"></i>
+            </div>
+            <div class="payment-details">
+                <h6 class="payment-title">DSTV Subscription</h6>
+                <p class="payment-date">May 10, 2025</p>
+            </div>
+            <div class="payment-amount">₦21,000</div>
+        </div>
+        
+        <div class="recent-payment-item">
+            <div class="payment-icon">
+                <i class="fas fa-wifi"></i>
+            </div>
+            <div class="payment-details">
+                <h6 class="payment-title">Spectranet Internet</h6>
+                <p class="payment-date">April 28, 2025</p>
+            </div>
+            <div class="payment-amount">₦18,500</div>
+        </div>
+    </div>
+    
+    <a href="{% url 'dashboard' %}" class="back-link">
+        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+    </a>
+</div>
+
+<script>
+    // Make bill category selection interactive
+    document.querySelectorAll('.bill-category').forEach(category => {
+        category.addEventListener('click', function() {
+            // Remove active class from all categories
+            document.querySelectorAll('.bill-category').forEach(cat => {
+                cat.classList.remove('active');
+            });
+            
+            // Add active class to clicked category
+            this.classList.add('active');
+            
+            // Get selected category
+            const selectedCategory = this.getAttribute('data-category');
+            
+            // Update provider options based on selected category
+            updateProviderOptions(selectedCategory);
+        });
+    });
+    
+    function updateProviderOptions(category) {
+        const providerSelect = document.getElementById('provider');
+        providerSelect.innerHTML = '<option value="" selected disabled>Select a provider</option>';
+        
+        let providers = [];
+        
+        switch(category) {
+            case 'electricity':
+                providers = [
+                    {value: 'ikeja-electric', text: 'Ikeja Electric'},
+                    {value: 'eko-electric', text: 'Eko Electric'},
+                    {value: 'abuja-electric', text: 'Abuja Electric'},
+                    {value: 'ibadan-electric', text: 'Ibadan Electric'},
+                    {value: 'enugu-electric', text: 'Enugu Electric'}
+                ];
+                break;
+            case 'internet':
+                providers = [
+                    {value: 'mtn-internet', text: 'MTN Internet'},
+                    {value: 'airtel-internet', text: 'Airtel Internet'},
+                    {value: 'spectranet', text: 'Spectranet'},
+                    {value: 'smile', text: 'Smile Communications'},
+                    {value: 'swift', text: 'Swift Networks'}
+                ];
+                break;
+            case 'water':
+                providers = [
+                    {value: 'lagos-water', text: 'Lagos Water Corporation'},
+                    {value: 'abuja-water', text: 'FCT Water Board'},
+                    {value: 'kaduna-water', text: 'Kaduna Water Board'},
+                    {value: 'rivers-water', text: 'Rivers State Water Board'}
+                ];
+                break;
+            case 'tv':
+                providers = [
+                    {value: 'dstv', text: 'DSTV'},
+                    {value: 'gotv', text: 'GOtv'},
+                    {value: 'startimes', text: 'StarTimes'},
+                    {value: 'showmax', text: 'Showmax'}
+                ];
+                break;
+            case 'tax':
+                providers = [
+                    {value: 'firs', text: 'Federal Inland Revenue Service'},
+                    {value: 'lirs', text: 'Lagos Internal Revenue Service'},
+                    {value: 'state-tax', text: 'State Tax Authority'}
+                ];
+                break;
+            case 'other':
+                providers = [
+                    {value: 'school-fees', text: 'School Fees'},
+                    {value: 'insurance', text: 'Insurance Premium'},
+                    {value: 'subscription', text: 'Subscription Services'},
+                    {value: 'other', text: 'Other Bills'}
+                ];
+                break;
+        }
+        
+        providers.forEach(provider => {
+            const option = document.createElement('option');
+            option.value = provider.value;
+            option.textContent = provider.text;
+            providerSelect.appendChild(option);
+        });
+    }
+    
+    // Form validation
+    document.getElementById('bill-payment-form').addEventListener('submit', function(event) {
+        const amountInput = document.getElementById('amount');
+        const amount = parseFloat(amountInput.value);
+        
+        if (amount < 100) {
+            event.preventDefault();
+            alert('Minimum payment amount is ₦100');
+            amountInput.focus();
+        }
+    });
+</script>
+{% endblock %}

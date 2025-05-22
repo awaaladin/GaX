@@ -1,0 +1,366 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<style>
+    :root {
+        --primary-color: #00954d; /* Access Bank green */
+        --secondary-color: #0033aa; /* Access Bank blue */
+        --accent-color: #ff7200; /* Access Bank orange */
+        --light-bg: #f9fafb;
+        --card-bg: #ffffff;
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+        --border-color: #e5e7eb;
+    }
+
+    .profile-container {
+        padding: 24px 15px 100px;
+        background-color: var(--light-bg);
+        min-height: calc(100vh - 56px);
+    }
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .page-header h3 {
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-dark);
+        font-size: 1.5rem;
+    }
+
+    .back-button {
+        color: var(--primary-color);
+        margin-right: 15px;
+        font-size: 1.2rem;
+    }
+
+    .profile-card {
+        background-color: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        padding: 0;
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .profile-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        padding: 30px 20px;
+        position: relative;
+        text-align: center;
+        color: white;
+    }
+
+    .profile-pic-container {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 15px;
+    }
+
+    .profile-pic {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-pic-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: var(--primary-color);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: 2px solid white;
+    }
+
+    .profile-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .profile-username {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    .verification-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 5px 12px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        margin-top: 10px;
+    }
+
+    .verification-badge i {
+        margin-right: 5px;
+    }
+
+    .profile-details {
+        padding: 20px;
+    }
+
+    .profile-section {
+        margin-bottom: 20px;
+    }
+
+    .profile-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .section-title i {
+        margin-right: 10px;
+        color: var(--primary-color);
+    }
+
+    .profile-detail-item {
+        display: flex;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .profile-detail-item:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        min-width: 120px;
+        font-weight: 500;
+        color: var(--text-muted);
+    }
+
+    .detail-value {
+        flex: 1;
+        color: var(--text-dark);
+    }
+
+    .edit-profile-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        width: 100%;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+
+    .settings-card {
+        background-color: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .settings-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .settings-item {
+        padding: 15px 0;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .settings-item:last-child {
+        border-bottom: none;
+    }
+
+    .settings-label {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        color: var(--text-dark);
+    }
+
+    .settings-icon {
+        margin-right: 15px;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background-color: rgba(0, 149, 77, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+    }
+
+    #profile-input {
+        display: none;
+    }
+
+    @media (max-width: 767px) {
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+        }
+        .profile-pic-container {
+            width: 100px;
+            height: 100px;
+        }
+    }
+</style>
+
+<div class="container profile-container">
+    <div class="page-header">
+        <a href="{% url 'dashboard' %}" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h3>My Profile</h3>
+    </div>
+
+    <div class="profile-card">
+        <div class="profile-header">
+            <form method="POST" enctype="multipart/form-data" action="{% url 'update_profile_picture' %}">
+                {% csrf_token %}
+                <div class="profile-pic-container">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-pic">
+                    {% else %}
+                        <img src="{% static 'images/default-profile.png' %}" alt="Default Profile Picture" class="profile-pic">
+                    {% endif %}
+                    <label for="profile-input" class="profile-pic-overlay">
+                        <i class="fas fa-camera" style="color: white; font-size: 14px;"></i>
+                    </label>
+                    <input type="file" id="profile-input" name="profile_picture" accept="image/*" capture="environment" onchange="this.form.submit();">
+                </div>
+            </form>
+            
+            <h4 class="profile-name">{{ profile.user.get_full_name|default:profile.user.username }}</h4>
+            <div class="profile-username">@{{ profile.user.username }}</div>
+            
+            <div class="verification-badge">
+                <i class="fas fa-shield-alt"></i>
+                Verified Account
+            </div>
+        </div>
+        
+        <div class="profile-details">
+            <div class="profile-section">
+                <h5 class="section-title">
+                    <i class="fas fa-user"></i>
+                    Personal Information
+                </h5>
+                <div class="profile-detail-item">
+                    <div class="detail-label">Bio</div>
+                    <div class="detail-value">{{ profile.bio|default:"Not provided" }}</div>
+                </div>
+                <div class="profile-detail-item">
+                    <div class="detail-label">Phone Number</div>
+                    <div class="detail-value">{{ profile.phone_number|default:"Not provided" }}</div>
+                </div>
+                <div class="profile-detail-item">
+                    <div class="detail-label">Location</div>
+                    <div class="detail-value">{{ profile.location|default:"Not provided" }}</div>
+                </div>
+                <div class="profile-detail-item">
+                    <div class="detail-label">Email</div>
+                    <div class="detail-value">{{ profile.user.email|default:"Not provided" }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <a href="{% url 'profile_edit' %}" class="btn edit-profile-btn">
+        <i class="fas fa-edit me-2"></i> Edit Profile
+    </a>
+    
+    <div class="settings-card">
+        <h5 class="section-title">
+            <i class="fas fa-cog"></i>
+            Account Settings
+        </h5>
+        <ul class="settings-list">
+            <li class="settings-item">
+                <div class="settings-label">
+                    <div class="settings-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    Notifications
+                </div>
+                <i class="fas fa-chevron-right text-muted"></i>
+            </li>
+            <li class="settings-item">
+                <div class="settings-label">
+                    <div class="settings-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    Security
+                </div>
+                <i class="fas fa-chevron-right text-muted"></i>
+            </li>
+            <li class="settings-item">
+                <div class="settings-label">
+                    <div class="settings-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    KYC Verification
+                </div>
+                <i class="fas fa-chevron-right text-muted"></i>
+            </li>
+            <li class="settings-item">
+                <div class="settings-label">
+                    <div class="settings-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    Help & Support
+                </div>
+                <i class="fas fa-chevron-right text-muted"></i>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <a href="{% url 'dashboard' %}">
+        <i class="fas fa-home"></i>
+        Home
+    </a>
+    <a href="{% url 'transaction_history' %}">
+        <i class="fas fa-history"></i>
+        History
+    </a>
+    <a href="#">
+        <i class="fas fa-analytics"></i>
+        Analytics
+    </a>
+    <a href="{% url 'manage_cards' %}">
+        <i class="fas fa-credit-card"></i>
+        Cards
+    </a>
+    <a href="{% url 'profile' %}" class="active">
+        <i class="fas fa-user"></i>
+        Profile
+    </a>
+</div>
+{% endblock %}

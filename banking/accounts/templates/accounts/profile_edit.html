@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<style>
+    :root {
+        --primary-color: #00954d; /* Access Bank green */
+        --secondary-color: #0033aa; /* Access Bank blue */
+        --accent-color: #ff7200; /* Access Bank orange */
+        --light-bg: #f9fafb;
+        --card-bg: #ffffff;
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+        --border-color: #e5e7eb;
+    }
+
+    .edit-profile-container {
+        padding: 24px 15px 100px;
+        background-color: var(--light-bg);
+        min-height: calc(100vh - 56px);
+    }
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .page-header h3 {
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-dark);
+        font-size: 1.5rem;
+    }
+
+    .back-button {
+        color: var(--primary-color);
+        margin-right: 15px;
+        font-size: 1.2rem;
+    }
+
+    .form-card {
+        background-color: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        padding: 24px;
+        margin-bottom: 20px;
+    }
+
+    .form-section {
+        margin-bottom: 24px;
+    }
+
+    .form-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .section-title i {
+        margin-right: 10px;
+        color: var(--primary-color);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: var(--text-dark);
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        display: block;
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: var(--text-dark);
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(0, 149, 77, 0.25);
+    }
+
+    .form-select {
+        display: block;
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: var(--text-dark);
+        background-color: #fff;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 16px 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        appearance: none;
+    }
+
+    .form-select:focus {
+        border-color: var(--primary-color);
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(0, 149, 77, 0.25);
+    }
+
+    .form-text {
+        margin-top: 5px;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+    .profile-pic-container {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+
+    .profile-pic {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        margin-bottom: 15px;
+    }
+
+    .change-photo-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .save-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        width: 100%;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+
+    .cancel-btn {
+        background-color: transparent;
+        color: var(--text-dark);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 14px;
+        width: 100%;
+        font-weight: 600;
+        margin-top: 15px;
+    }
+
+    #id_profile_picture {
+        display: none;
+    }
+
+    @media (max-width: 767px) {
+        .form-card {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="container edit-profile-container">
+    <div class="page-header">
+        <a href="{% url 'profile' %}" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h3>Edit Profile</h3>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-card">
+            <div class="profile-pic-container">
+                {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="profile-pic">
+                {% else %}
+                    <img src="{% static 'images/default-profile.png' %}" alt="Default Profile Picture" class="profile-pic">
+                {% endif %}
+                
+                <label for="id_profile_picture" class="change-photo-btn">
+                    <i class="fas fa-camera me-2"></i> Change Photo
+                </label>
+                {{ form.profile_picture }}
+            </div>
+            
+            <div class="form-section">
+                <h5 class="section-title">
+                    <i class="fas fa-user"></i>
+                    Personal Information
+                </h5>
+                
+                <div class="form-group">
+                    <label for="id_first_name" class="form-label">First Name</label>
+                    {{ form.first_name|default:"<input type='text' name='first_name' id='id_first_name' class='form-control' value=''>" }}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_last_name" class="form-label">Last Name</label>
+                    {{ form.last_name|default:"<input type='text' name='last_name' id='id_last_name' class='form-control' value=''>" }}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_bio" class="form-label">Bio</label>
+                    {{ form.bio|default:"<textarea name='bio' id='id_bio' class='form-control' rows='3'></textarea>" }}
+                    <div class="form-text">Tell us a bit about yourself</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_phone_number" class="form-label">Phone Number</label>
+                    {{ form.phone_number|default:"<input type='tel' name='phone_number' id='id_phone_number' class='form-control' value=''

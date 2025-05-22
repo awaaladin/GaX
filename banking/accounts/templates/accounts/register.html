@@ -1,0 +1,468 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="access-register-container">
+  <div class="access-register-card">
+    <div class="access-brand">
+      <img src="{% static 'images/bank-logo.png' %}" alt="Bank Logo" class="access-logo" onerror="this.src='/api/placeholder/180/60'; this.onerror=null;">
+      <h2>Open an Account</h2>
+      <p class="access-tagline">Join millions of satisfied customers</p>
+    </div>
+    
+    <div class="access-progress-container">
+      <div class="access-progress-steps">
+        <div class="access-progress-step access-progress-active">
+          <div class="access-step-number">1</div>
+          <div class="access-step-label">Personal Details</div>
+        </div>
+        <div class="access-progress-line"></div>
+        <div class="access-progress-step">
+          <div class="access-step-number">2</div>
+          <div class="access-step-label">Verification</div>
+        </div>
+        <div class="access-progress-line"></div>
+        <div class="access-progress-step">
+          <div class="access-step-number">3</div>
+          <div class="access-step-label">Completion</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="access-account-types">
+      <div class="access-account-option access-option-active" data-type="personal">
+        <div class="access-option-icon">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="access-option-text">
+          <h4>Personal Account</h4>
+          <p>For individual banking needs</p>
+        </div>
+      </div>
+      <div class="access-account-option" data-type="business">
+        <div class="access-option-icon">
+          <i class="fas fa-briefcase"></i>
+        </div>
+        <div class="access-option-text">
+          <h4>Business Account</h4>
+          <p>For companies and organizations</p>
+        </div>
+      </div>
+    </div>
+    
+    <form method="post" class="access-register-form">
+      {% csrf_token %}
+      
+      <div class="access-form-section">
+        <h3 class="access-section-title">Personal Information</h3>
+        
+        <div class="access-form-row">
+          <div class="access-form-group">
+            <label for="id_first_name">First Name</label>
+            <input type="text" name="first_name" id="id_first_name" required>
+          </div>
+          <div class="access-form-group">
+            <label for="id_last_name">Last Name</label>
+            <input type="text" name="last_name" id="id_last_name" required>
+          </div>
+        </div>
+        
+        <div class="access-form-group">
+          <label for="id_email">Email Address</label>
+          <input type="email" name="email" id="id_email" required>
+        </div>
+        
+        <div class="access-form-group">
+          <label for="id_phone">Phone Number</label>
+          <div class="access-phone-input">
+            <select name="phone_code" id="id_phone_code">
+              <option value="+234">+234</option>
+              <option value="+1">+1</option>
+              <option value="+44">+44</option>
+              <option value="+33">+33</option>
+            </select>
+            <input type="tel" name="phone" id="id_phone" required>
+          </div>
+        </div>
+        
+        <div class="access-form-group">
+          <label for="id_dob">Date of Birth</label>
+          <input type="date" name="date_of_birth" id="id_dob" required>
+        </div>
+      </div>
+      
+      <div class="access-form-section">
+        <h3 class="access-section-title">Account Security</h3>
+        
+        <div class="access-form-group">
+          <label for="id_username">Username</label>
+          <input type="text" name="username" id="id_username" required>
+        </div>
+        
+        <div class="access-form-group">
+          <label for="id_password1">Password</label>
+          <div class="access-password-input">
+            <input type="password" name="password1" id="id_password1" required>
+            <button type="button" class="access-toggle-password">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="access-password-strength">
+            <div class="access-strength-meter">
+              <div class="access-strength-bar" style="width: 0%"></div>
+            </div>
+            <span class="access-strength-text">Password strength: Too weak</span>
+          </div>
+        </div>
+        
+        <div class="access-form-group">
+          <label for="id_password2">Confirm Password</label>
+          <div class="access-password-input">
+            <input type="password" name="password2" id="id_password2" required>
+            <button type="button" class="access-toggle-password">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="access-form-section">
+        <div class="access-checkbox">
+          <input type="checkbox" id="id_terms" name="terms" required>
+          <label for="id_terms">I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></label>
+        </div>
+        
+        <div class="access-checkbox">
+          <input type="checkbox" id="id_marketing" name="marketing">
+          <label for="id_marketing">I want to receive marketing communications and promotions</label>
+        </div>
+      </div>
+      
+      <div class="access-captcha">
+        <div class="access-captcha-placeholder">
+          <div class="access-captcha-box">
+            <input type="checkbox" id="id_captcha">
+            <label for="id_captcha">I'm not a robot</label>
+          </div>
+          <div class="access-captcha-logo">
+            <img src="/api/placeholder/40/40" alt="Captcha">
+            <span>reCAPTCHA</span>
+          </div>
+        </div>
+      </div>
+      
+      <button type="submit" class="access-register-btn">CONTINUE</button>
+      
+      <div class="access-secure-note">
+        <i class="fas fa-lock"></i> All your data is secured with 256-bit SSL encryption
+      </div>
+    </form>
+    
+    <div class="access-login-prompt">
+      <p>Already have an account? <a href="{% url 'login' %}">Sign In</a></p>
+    </div>
+  </div>
+  
+  <div class="access-register-features">
+    <div class="access-feature">
+      <div class="access-feature-icon">
+        <i class="fas fa-wallet"></i>
+      </div>
+      <div class="access-feature-text">
+        <h3>Zero Account Opening Fee</h3>
+        <p>No minimum balance requirement to open a personal account</p>
+      </div>
+    </div>
+    <div class="access-feature">
+      <div class="access-feature-icon">
+        <i class="fas fa-credit-card"></i>
+      </div>
+      <div class="access-feature-text">
+        <h3>Free Debit Card</h3>
+        <p>Get a free debit card with global acceptance</p>
+      </div>
+    </div>
+    <div class="access-feature">
+      <div class="access-feature-icon">
+        <i class="fas fa-mobile-alt"></i>
+      </div>
+      <div class="access-feature-text">
+        <h3>Mobile Banking</h3>
+        <p>Access your accounts anytime, anywhere with our mobile app</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Toggle password visibility
+  document.querySelectorAll('.access-toggle-password').forEach(button => {
+    button.addEventListener('click', function() {
+      const input = this.parentNode.querySelector('input');
+      const icon = this.querySelector('i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    });
+  });
+  
+  // Account type selection
+  document.querySelectorAll('.access-account-option').forEach(option => {
+    option.addEventListener('click', function() {
+      document.querySelectorAll('.access-account-option').forEach(o => o.classList.remove('access-option-active'));
+      this.classList.add('access-option-active');
+    });
+  });
+  
+  // Password strength meter
+  document.getElementById('id_password1').addEventListener('input', function() {
+    const password = this.value;
+    let strength = 0;
+    
+    if (password.length >= 8) strength += 25;
+    if (password.match(/[A-Z]/)) strength += 25;
+    if (password.match(/[0-9]/)) strength += 25;
+    if (password.match(/[^a-zA-Z0-9]/)) strength += 25;
+    
+    const strengthBar = document.querySelector('.access-strength-bar');
+    const strengthText = document.querySelector('.access-strength-text');
+    
+    strengthBar.style.width = strength + '%';
+    
+    if (strength <= 25) {
+      strengthBar.style.backgroundColor = '#ff4d4d';
+      strengthText.textContent = 'Password strength: Too weak';
+    } else if (strength <= 50) {
+      strengthBar.style.backgroundColor = '#ffa64d';
+      strengthText.textContent = 'Password strength: Weak';
+    } else if (strength <= 75) {
+      strengthBar.style.backgroundColor = '#ffff4d';
+      strengthText.textContent = 'Password strength: Medium';
+    } else {
+      strengthBar.style.backgroundColor = '#4dff4d';
+      strengthText.textContent = 'Password strength: Strong';
+    }
+  });
+</script>
+
+<style>
+  :root {
+    --access-primary: #00337f;
+    --access-secondary: #ffd300;
+    --access-accent: #007236;
+    --access-light: #f5f7fa;
+    --access-border: #e0e0e0;
+    --access-text: #333333;
+    --access-text-light: #666666;
+    --access-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  }
+
+  body {
+    background-color: #f6f8fb;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--access-text);
+  }
+
+  .access-register-container {
+    display: flex;
+    min-height: 100vh;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem;
+    gap: 2rem;
+  }
+
+  .access-register-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--access-shadow);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 650px;
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .access-brand {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .access-logo {
+    height: 60px;
+    margin-bottom: 1rem;
+  }
+
+  .access-brand h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--access-primary);
+    margin: 0.5rem 0;
+  }
+
+  .access-tagline {
+    color: var(--access-text-light);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .access-progress-container {
+    margin: 2rem 0;
+  }
+
+  .access-progress-steps {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .access-progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .access-step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--access-light);
+    border: 2px solid var(--access-border);
+    color: var(--access-text-light);
+    font-weight: 600;
+  }
+
+  .access-progress-active .access-step-number {
+    background-color: var(--access-primary);
+    border-color: var(--access-primary);
+    color: white;
+  }
+
+  .access-step-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--access-text-light);
+  }
+
+  .access-progress-active .access-step-label {
+    color: var(--access-primary);
+  }
+
+  .access-progress-line {
+    flex: 1;
+    height: 2px;
+    background-color: var(--access-border);
+    position: relative;
+    z-index: 1;
+  }
+
+  .access-account-types {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .access-account-option {
+    flex: 1;
+    padding: 1.25rem;
+    border: 2px solid var(--access-border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .access-option-active {
+    border-color: var(--access-primary);
+    background-color: #f0f5ff;
+  }
+
+  .access-option-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--access-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--access-primary);
+    font-size: 1.2rem;
+  }
+
+  .access-option-text h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--access-text);
+  }
+
+  .access-option-text p {
+    margin: 0.25rem 0 0;
+    font-size: 0.85rem;
+    color: var(--access-text-light);
+  }
+
+
+    .access-register-form {
+        margin-top: 1.5rem;
+    }
+  .access-register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .access-form-section {
+    margin-bottom: 2rem;
+  }
+
+  .access-section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--access-primary);
+    margin-bottom: 1rem;
+  }
+
+  .access-form-row {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .access-form-group {
+    flex: 1;
+  }
+
+  .access-form-group label {
+    font-size: 0.9rem;
+    color: var(--access-text-light);
+    margin-bottom: 0.5rem;
+    display: block;
+
+  }
+
+    .access-form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--access-border);
+        border-radius: 8px;
+        font-size: 1rem;
+        color: var(--access-text);
+        transition: all 0.3s ease;
+    }
+
+</style>
+
+{% endblock %}

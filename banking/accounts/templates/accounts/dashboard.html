@@ -1,0 +1,588 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<style>
+    :root {
+        --primary-color: #00954d; /* Access Bank green */
+        --secondary-color: #0033aa; /* Access Bank blue */
+        --accent-color: #ff7200; /* Access Bank orange */
+        --light-bg: #f9fafb;
+        --card-bg: #ffffff;
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+        --border-color: #e5e7eb;
+    }
+
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Segoe UI', sans-serif;
+        color: var(--text-dark);
+    }
+
+    .dashboard-container {
+        padding-bottom: 80px;
+    }
+    
+    .navbar-custom {
+        background-color: var(--primary-color);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .navbar-brand {
+        font-weight: 700;
+        color: white !important;
+    }
+    
+    .balance-card {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--text-dark); /* Use dark text for contrast */
+        border-radius: 16px;
+        padding: 24px;
+        margin-top: 20px;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .balance-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        transform: rotate(45deg);
+    }
+
+    .balance-card h2,
+    .balance-card h5,
+    .balance-card .balance-label,
+    .balance-card .card-number {
+        color: var(--text-dark); /* Use dark text for all text in balance card */
+    }
+    
+    .balance-label {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin-bottom: 4px;
+    }
+    
+    .card-number {
+        letter-spacing: 2px;
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+    
+    .action-buttons {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 12px;
+        margin-top: 16px;
+    }
+
+    .action-button {
+        background-color: white;
+        color: var(--primary-color);
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 0.85rem;
+        text-align: center;
+        margin: 6px 4px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        font-weight: 600;
+        transition: all 0.2s ease;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 80px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .action-button:visited, .action-button:active {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+    .action-button[disabled], .action-button.disabled {
+        opacity: 0.5;
+        pointer-events: auto;
+    }
+    
+    .action-button:hover, .action-button:focus {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        color: var(--secondary-color);
+        background: #f3f4f6;
+        text-decoration: none;
+    }
+    
+    .action-button i {
+        font-size: 1.5rem;
+        margin-bottom: 6px;
+        color: var(--primary-color);
+    }
+
+    .quick-actions {
+        background-color: var(--card-bg);
+        border-radius: 16px;
+        padding: 20px;
+        margin-top: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        color: var(--text-dark);
+    }
+    
+    .quick-actions h5 {
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: var(--text-dark);
+    }
+    
+    .service-grid {
+        margin-top: 24px;
+        color: var(--text-dark);
+        background: var(--card-bg);
+    }
+    
+    .service-item {
+        background-color: var(--card-bg);
+        border-radius: 16px;
+        padding: 16px;
+        text-align: center;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s ease;
+        text-decoration: none;
+        color: var(--primary-color);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .service-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        color: var(--secondary-color);
+        background: #f3f4f6;
+    }
+    
+    .service-item i {
+        font-size: 2rem;
+        margin-bottom: 12px;
+        color: var(--primary-color);
+    }
+    
+    .service-item p {
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .transaction-list {
+        background-color: var(--card-bg);
+        border-radius: 16px;
+        padding: 20px;
+        margin-top: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        margin-bottom: 100px;
+        color: var(--text-dark);
+    }
+    
+    .transaction-list h5 {
+        font-weight: 600;
+        margin-bottom: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .view-all {
+        font-size: 0.9rem;
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+    
+    .transaction-item {
+        display: flex;
+        align-items: center;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .transaction-item:last-child {
+        border-bottom: none;
+    }
+    
+    .transaction-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background-color: rgba(0, 149, 77, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+    }
+    
+    .transaction-icon i {
+        color: var(--primary-color);
+        font-size: 1.25rem;
+    }
+    
+    .transaction-details {
+        flex: 1;
+    }
+    
+    .transaction-title {
+        font-weight: 600;
+        margin: 0;
+        color: var(--text-dark);
+    }
+    
+    .transaction-date {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin: 0;
+    }
+    
+    .transaction-amount {
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+    
+    .amount-debit {
+        color: #ef4444;
+    }
+    
+    .amount-credit {
+        color: var(--primary-color);
+    }
+    
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-around;
+        padding: 12px 0;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        z-index: 1000;
+        color: var(--primary-color);
+    }
+    
+    .bottom-nav a {
+        text-decoration: none;
+        color: var(--primary-color);
+        font-size: 0.8rem;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .bottom-nav a.active {
+        color: var(--secondary-color);
+    }
+    
+    .bottom-nav i {
+        font-size: 1.25rem;
+        margin-bottom: 4px;
+    }
+    
+    @media (max-width: 767px) {
+        .balance-card {
+            padding: 20px;
+        }
+        
+        .balance-card h2 {
+            font-size: 1.75rem;
+        }
+        
+        .action-button {
+            min-height: 70px;
+            padding: 8px;
+        }
+    }
+
+    .badge.bg-light.text-dark {
+        color: var(--primary-color) !important;
+        background: #f3f4f6 !important;
+    }
+
+    /* Ensure nav-link and logout button are visible */
+    .navbar-nav .nav-link, .navbar-nav .btn.nav-link {
+        color: #fff !important;
+        display: flex;
+        align-items: center;
+    }
+    .navbar-nav .btn.nav-link {
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+    }
+</style>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+    <div class="container">
+        <a class="navbar-brand" href="#">GAX</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">Help</a>
+                </li>
+                <li class="nav-item">
+                    <form action="{% url 'logout' %}" method="POST" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn nav-link text-white" style="background:none; border:none; padding:0;">
+                            <i class="fas fa-sign-out-alt me-1"></i> Logout
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container dashboard-container">
+    <!-- Balance Card -->
+    <div class="balance-card">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <p class="balance-label mb-0">Welcome back</p>
+                <h5 class="fw-bold">{{ user.get_full_name|default:user.username }}</h5>
+            </div>
+            <div>
+                <span class="badge bg-light text-dark px-3 py-2">
+                    <i class="fas fa-shield-alt me-1"></i> Verified
+                </span>
+            </div>
+        </div>
+        
+        <p class="balance-label">Available Balance</p>
+        <h2>₦{{ profile.balance|default:"0.00" }}</h2>
+        <p class="card-number">**** **** **** {{ user.id|stringformat:"04d" }}</p>
+        
+        <div class="action-buttons">
+            <div class="row g-2">
+                <div class="col-4">
+                    <a href="{% url 'deposit' %}" class="action-button">
+                        <i class="fas fa-plus-circle"></i>
+                        Add Money
+                    </a>
+                </div>
+                <div class="col-4">
+                    <a href="{% url 'transfer' %}" class="action-button">
+                        <i class="fas fa-exchange-alt"></i>
+                        Transfer
+                    </a>
+                </div>
+                <div class="col-4">
+                    <a href="{% url 'withdraw' %}" class="action-button">
+                        <i class="fas fa-arrow-alt-circle-down"></i>
+                        Withdraw
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stripe Payment Button Example -->
+    <div class="text-center my-4">
+        <form id="stripe-payment-form">
+            <button type="button" id="stripe-checkout-btn" class="btn btn-primary" style="background: var(--accent-color); border: none;">
+                <i class="fas fa-credit-card"></i> Fund Wallet with Card
+            </button>
+        </form>
+    </div>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        document.getElementById('stripe-checkout-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Example: Redirect to Stripe Checkout (replace with your backend endpoint)
+            fetch('/create-stripe-session/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({ amount: 1000 }) // Example: 1000 kobo = ₦10
+            })
+            .then(response => response.json())
+            .then(data => {
+                var stripe = Stripe(STRIPE_PUBLIC_KEY);
+                stripe.redirectToCheckout({ sessionId: data.sessionId });
+            });
+        });
+    </script>
+    
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <h5>Quick Services</h5>
+        <div class="row g-3">
+            <div class="col-3 col-md-3">
+                <a href="{% url 'buy_airtime' %}" class="service-item">
+                    <i class="fas fa-mobile-alt"></i>
+                    <p>Airtime</p>
+                </a>
+            </div>
+            <div class="col-3 col-md-3">
+                <a href="{% url 'buy_data' %}" class="service-item">
+                    <i class="fas fa-wifi"></i>
+                    <p>Data</p>
+                </a>
+            </div>
+            <div class="col-3 col-md-3">
+                <a href="{% url 'pay_tv' %}" class="service-item">
+                    <i class="fas fa-tv"></i>
+                    <p>TV</p>
+                </a>
+            </div>
+            <div class="col-3 col-md-3">
+                <a href="{% url 'pay_electricity' %}" class="service-item">
+                    <i class="fas fa-bolt"></i>
+                    <p>Electricity</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Service Grid -->
+    <div class="service-grid">
+        <div class="row g-3">
+            <div class="col-4 col-md-4">
+                <a href="{% url 'manage_cards' %}" class="service-item">
+                    <i class="fas fa-credit-card"></i>
+                    <p>Cards</p>
+                </a>
+            </div>
+            <div class="col-4 col-md-4">
+                <a href="#" class="service-item">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <p>Loans</p>
+                </a>
+            </div>
+            <div class="col-4 col-md-4">
+                <a href="#" class="service-item">
+                    <i class="fas fa-piggy-bank"></i>
+                    <p>Savings</p>
+                </a>
+            </div>
+            <div class="col-4 col-md-4">
+                <a href="#" class="service-item">
+                    <i class="fas fa-users"></i>
+                    <p>Refer & Earn</p>
+                </a>
+            </div>
+            <div class="col-4 col-md-4">
+                <a href="#" class="service-item">
+                    <i class="fas fa-chart-line"></i>
+                    <p>Investments</p>
+                </a>
+            </div>
+            <div class="col-4 col-md-4">
+                <a href="#" class="service-item">
+                    <i class="fas fa-globe"></i>
+                    <p>Int'l Banking</p>
+                </a>
+            </div>
+            <div class="col-4 col-md-4">
+                <a href="{% url 'bill_payment' %}" class="service-item">
+                    <i class="fas fa-money-check-alt"></i>
+                    <p>Bill Pay</p>
+                </a>
+            </div>
+            <div class="col-4 col-md-4">
+                <a href="{% url 'kyc_upload' %}" class="service-item">
+                    <i class="fas fa-id-card"></i>
+                    <p>KYC</p>
+                </a>
+            </div>
+            <div class="col-4 col-md-4">
+                <a href="{% url 'approve_transactions' %}" class="service-item">
+                    <i class="fas fa-user-shield"></i>
+                    <p>Approve Txns</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Transactions -->
+    <div class="transaction-list">
+        <h5>
+            Recent Transactions
+            <a href="{% url 'transaction_history' %}" class="view-all">View All</a>
+        </h5>
+        
+        {% for txn in transactions %}
+        <div class="transaction-item">
+            <div class="transaction-icon">
+                {% if txn.transaction_type == 'deposit' %}
+                    <i class="fas fa-arrow-down"></i>
+                {% elif txn.transaction_type == 'withdrawal' %}
+                    <i class="fas fa-arrow-up"></i>
+                {% elif txn.transaction_type == 'transfer' %}
+                    <i class="fas fa-exchange-alt"></i>
+                {% else %}
+                    <i class="fas fa-receipt"></i>
+                {% endif %}
+            </div>
+            <div class="transaction-details">
+                <h6 class="transaction-title">{{ txn.transaction_type|capfirst }}</h6>
+                <p class="transaction-date">{{ txn.timestamp|date:"M d, H:i" }}</p>
+            </div>
+            <div class="transaction-amount {% if txn.transaction_type == 'deposit' %}amount-credit{% else %}amount-debit{% endif %}">
+                {% if txn.transaction_type == 'deposit' %}+{% else %}-{% endif %}₦{{ txn.amount }}
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-4">
+            <i class="fas fa-receipt text-muted mb-3" style="font-size: 2rem;"></i>
+            <p class="text-muted">No transactions yet</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <a href="{% url 'dashboard' %}" class="active">
+        <i class="fas fa-home"></i>
+        Home
+    </a>
+    <a href="{% url 'transaction_history' %}">
+        <i class="fas fa-history"></i>
+        History
+    </a>
+    <a href="#">
+        <i class="fas fa-analytics"></i>
+        Analytics
+    </a>
+    <a href="{% url 'manage_cards' %}">
+        <i class="fas fa-credit-card"></i>
+        Cards
+    </a>
+    <a href="{% url 'profile' %}">
+        <i class="fas fa-user"></i>
+        Profile
+    </a>
+</div>
+
+{% if STRIPE_PUBLIC_KEY %}
+<script>
+    // Stripe public key is available for JS usage
+    const STRIPE_PUBLIC_KEY = "{{ STRIPE_PUBLIC_KEY }}";
+    // Example: initialize Stripe.js if needed
+    // var stripe = Stripe(STRIPE_PUBLIC_KEY);
+</script>
+{% endif %}
+{% endblock %}
