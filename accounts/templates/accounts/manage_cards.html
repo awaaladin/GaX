@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<style>
+    :root {
+        --primary-color: #00954d; /* Access Bank green */
+        --secondary-color: #0033aa; /* Access Bank blue */
+        --accent-color: #ff7200; /* Access Bank orange */
+        --light-bg: #f9fafb;
+        --card-bg: #ffffff;
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+        --border-color: #e5e7eb;
+    }
+
+    .cards-container {
+        padding: 24px 15px 100px;
+        background-color: var(--light-bg);
+        min-height: calc(100vh - 56px);
+    }
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .page-header h3 {
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-dark);
+        font-size: 1.5rem;
+    }
+
+    .back-button {
+        color: var(--primary-color);
+        margin-right: 15px;
+        font-size: 1.2rem;
+    }
+
+    .card-item {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        color: white;
+    }
+
+    .card-item::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        transform: rotate(45deg);
+    }
+
+    .card-info {
+        position: relative;
+        z-index: 1;
+    }
+
+    .card-type {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+    }
+
+    .card-number {
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+        margin-bottom: 15px;
+    }
+
+    .card-balance {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .card-expires {
+        font-size: 0.8rem;
+        opacity: 0.8;
+    }
+
+    .card-actions {
+        background-color: var(--card-bg);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .action-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .action-item {
+        padding: 15px 0;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .action-item:last-child {
+        border-bottom: none;
+    }
+
+    .action-label {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        color: var(--text-dark);
+    }
+
+    .action-icon {
+        margin-right: 15px;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background-color: rgba(0, 149, 77, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+    }
+
+    .action-toggle .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .action-button {
+        padding: 8px 20px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .btn-freeze {
+        background-color: #ef4444;
+        color: white;
+        border: none;
+    }
+
+    .btn-unfreeze {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+    }
+
+    .add-card-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        width: 100%;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+
+    @media (max-width: 767px) {
+        .card-item {
+            padding: 15px;
+        }
+        .card-number {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="container cards-container">
+    <div class="page-header">
+        <a href="{% url 'dashboard' %}" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h3>Manage Cards</h3>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        {% for account in accounts %}
+        <div class="card-item">
+            <div class="card-info">
+                <div class="card-type">{{ account.account_type|capfirst }}</div>
+                <div class="card-number">**** **** **** {{ account.id|stringformat:"04d" }}</div>
+                <div class="card-balance">₦{{ account.balance }}</div>
+                <div class="card-expires">Expires: 10/28</div>
+            </div>
+        </div>
+
+        <div class="card-actions">
+            <ul class="action-list">
+                <li class="action-item">
+                    <div class="action-label">
+                        <div class="action-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        {% if account.is_frozen %}
+                        Unfreeze Card
+                        {% else %}
+                        Freeze Card
+                        {% endif %}
+                    </div>
+                    <button type="submit" name="freeze_{{ account.id }}" class="action-button {% if account.is_frozen %}btn-unfreeze{% else %}btn-freeze{% endif %}">
+                        {% if account.is_frozen %}Unfreeze{% else %}Freeze{% endif %}
+                    </button>
+                </li>
+                <li class="action-item">
+                    <div class="action-label">
+                        <div class="action-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        View Card Details
+                    </div>
+                    <a href="#" class="btn btn-outline-primary action-button">View</a>
+                </li>
+                <li class="action-item">
+                    <div class="action-label">
+                        <div class="action-icon">
+                            <i class="fas fa-sliders-h"></i>
+                        </div>
+                        Set Transaction Limit
+                    </div>
+                    <a href="#" class="btn btn-outline-primary action-button">Set</a>
+                </li>
+            </ul>
+        </div>
+        {% empty %}
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-credit-card" style="font-size: 3rem; color: var(--text-muted);"></i>
+            </div>
+            <h5 class="text-muted">No cards available</h5>
+            <p class="text-muted">Apply for a new card to manage your finances better</p>
+        </div>
+        {% endfor %}
+
+        <button type="button" class="add-card-btn">
+            <i class="fas fa-plus me-2"></i> Add New Card
+        </button>
+    </form>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <a href="{% url 'dashboard' %}">
+        <i class="fas fa-home"></i>
+        Home
+    </a>
+    <a href="{% url 'transaction_history' %}">
+        <i class="fas fa-history"></i>
+        History
+    </a>
+    <a href="#">
+        <i class="fas fa-analytics"></i>
+        Analytics
+    </a>
+    <a href="{% url 'manage_cards' %}" class="active">
+        <i class="fas fa-credit-card"></i>
+        Cards
+    </a>
+    <a href="{% url 'profile' %}">
+        <i class="fas fa-user"></i>
+        Profile
+    </a>
+</div>
+{% endblock %}

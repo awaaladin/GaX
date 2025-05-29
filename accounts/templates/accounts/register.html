@@ -1,0 +1,1213 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  :root {
+    --access-primary: #00337f;
+    --access-secondary: #ffd300;
+    --access-accent: #007236;
+    --access-light: #f5f7fa;
+    --access-border: #e0e0e0;
+    --access-text: #333333;
+    --access-text-light: #666666;
+    --access-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  }
+
+  body {
+    background-color: #f6f8fb;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--access-text);
+  }
+
+  .access-register-container {
+    display: flex;
+    min-height: 100vh;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem;
+    gap: 2rem;
+  }
+
+  .access-register-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--access-shadow);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 800px;
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .access-brand {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .access-logo {
+    height: 60px;
+    margin-bottom: 1rem;
+  }
+
+  .access-brand h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--access-primary);
+    margin: 0.5rem 0;
+  }
+
+  .access-tagline {
+    color: var(--access-text-light);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .access-progress-container {
+    margin: 2rem 0;
+  }
+
+  .access-progress-steps {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .access-progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .access-step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--access-light);
+    border: 2px solid var(--access-border);
+    color: var(--access-text-light);
+    font-weight: 600;
+  }
+
+  .access-progress-active .access-step-number {
+    background-color: var(--access-primary);
+    border-color: var(--access-primary);
+    color: white;
+  }
+
+  .access-step-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--access-text-light);
+  }
+
+  .access-progress-active .access-step-label {
+    color: var(--access-primary);
+  }
+
+  .access-progress-line {
+    flex: 1;
+    height: 2px;
+    background-color: var(--access-border);
+    position: relative;
+    z-index: 1;
+  }
+
+  .access-account-types {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .access-account-option {
+    flex: 1;
+    padding: 1.25rem;
+    border: 2px solid var(--access-border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+.access-option-active {
+    border-color: var(--access-primary);
+    background-color: rgba(0, 51, 127, 0.05);
+  }
+
+  .access-option-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--access-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--access-text-light);
+    font-size: 1.25rem;
+  }
+
+  .access-option-active .access-option-icon {
+    background-color: var(--access-primary);
+    color: white;
+  }
+
+  .access-option-text h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--access-text);
+    margin-bottom: 0.25rem;
+  }
+
+  .access-option-text p {
+    font-size: 0.875rem;
+    color: var(--access-text-light);
+    margin: 0;
+  }
+
+  .access-register-form {
+    margin-bottom: 2rem;
+  }
+
+  .access-form-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--access-border);
+  }
+
+  .access-form-section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 1.5rem;
+  }
+
+  .access-section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--access-primary);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .access-section-title::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background-color: var(--access-secondary);
+    border-radius: 2px;
+  }
+
+  .access-form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .access-form-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .access-form-group label {
+    font-weight: 500;
+    color: var(--access-text);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .access-form-group input,
+  .access-form-group select,
+  .access-form-group textarea {
+    padding: 0.75rem;
+    border: 2px solid var(--access-border);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: white;
+  }
+
+  .access-form-group input:focus,
+  .access-form-group select:focus,
+  .access-form-group textarea:focus {
+    outline: none;
+    border-color: var(--access-primary);
+    box-shadow: 0 0 0 3px rgba(0, 51, 127, 0.1);
+  }
+
+  .access-form-group input:invalid,
+  .access-form-group select:invalid {
+    border-color: #ff4444;
+  }
+
+  .access-phone-input {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .access-phone-input select {
+    flex: 0 0 120px;
+  }
+
+  .access-phone-input input {
+    flex: 1;
+  }
+
+  .access-password-input {
+    position: relative;
+  }
+
+  .access-toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--access-text-light);
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
+
+  .access-toggle-password:hover {
+    color: var(--access-primary);
+  }
+
+  .access-password-strength {
+    margin-top: 0.5rem;
+  }
+
+  .access-strength-meter {
+    width: 100%;
+    height: 4px;
+    background-color: var(--access-light);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 0.25rem;
+  }
+
+  .access-strength-bar {
+    height: 100%;
+    background-color: #ff4d4d;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+  }
+
+  .access-strength-text {
+    font-size: 0.8rem;
+    color: var(--access-text-light);
+  }
+
+  .access-field-note {
+    font-size: 0.8rem;
+    color: var(--access-text-light);
+    margin-top: 0.25rem;
+    font-style: italic;
+  }
+
+  .access-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .access-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--access-primary);
+  }
+
+  .access-checkbox label {
+    font-size: 0.9rem;
+    color: var(--access-text);
+    line-height: 1.4;
+    cursor: pointer;
+  }
+
+  .access-checkbox label a {
+    color: var(--access-primary);
+    text-decoration: none;
+  }
+
+  .access-checkbox label a:hover {
+    text-decoration: underline;
+  }
+
+  .access-captcha {
+    margin: 2rem 0;
+  }
+
+  .access-captcha-placeholder {
+    border: 2px solid var(--access-border);
+    border-radius: 6px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fafafa;
+  }
+
+  .access-captcha-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .access-captcha-box input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--access-primary);
+  }
+
+  .access-captcha-box label {
+    font-size: 1rem;
+    color: var(--access-text);
+    cursor: pointer;
+  }
+
+  .access-captcha-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--access-text-light);
+    font-size: 0.8rem;
+  }
+
+  .access-captcha-logo img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .access-register-btn {
+    width: 100%;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--access-primary), #004aad);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .access-register-btn:hover {
+    background: linear-gradient(135deg, #004aad, var(--access-primary));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 51, 127, 0.3);
+  }
+
+  .access-register-btn:active {
+    transform: translateY(0);
+  }
+
+  .access-secure-note {
+    text-align: center;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background-color: rgba(0, 114, 54, 0.05);
+    border-radius: 6px;
+    color: var(--access-accent);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .access-secure-note i {
+    font-size: 1rem;
+  }
+
+  .access-login-prompt {
+    text-align: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--access-border);
+  }
+
+  .access-login-prompt p {
+    color: var(--access-text-light);
+    margin: 0;
+  }
+
+  .access-login-prompt a {
+    color: var(--access-primary);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .access-login-prompt a:hover {
+    text-decoration: underline;
+  }
+
+  .access-register-features {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .access-feature {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--access-shadow);
+    transition: all 0.3s ease;
+  }
+
+  .access-feature:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  }
+
+  .access-feature-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--access-primary), #004aad);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .access-feature-text h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--access-text);
+    margin-bottom: 0.5rem;
+  }
+
+  .access-feature-text p {
+    font-size: 0.9rem;
+    color: var(--access-text-light);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1200px) {
+    .access-register-container {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .access-register-features {
+      max-width: 800px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .access-register-container {
+      padding: 1rem;
+    }
+
+    .access-register-card {
+      padding: 1.5rem;
+    }
+
+    .access-form-row {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .access-account-types {
+      flex-direction: column;
+    }
+
+    .access-progress-steps {
+      gap: 0.5rem;
+    }
+
+    .access-step-label {
+      font-size: 0.75rem;
+    }
+
+    .access-phone-input {
+      flex-direction: column;
+    }
+
+    .access-phone-input select {
+      flex: none;
+    }
+
+    .access-register-features {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .access-register-card {
+      padding: 1rem;
+    }
+
+    .access-brand h2 {
+      font-size: 1.5rem;
+    }
+
+    .access-captcha-placeholder {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+  }
+
+  /* Loading and Success States */
+  .access-loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .access-success {
+    border-color: var(--access-accent) !important;
+    background-color: rgba(0, 114, 54, 0.05);
+  }
+
+  .access-error {
+    border-color: #ff4444 !important;
+    background-color: rgba(255, 68, 68, 0.05);
+  }
+
+  /* Animation for form sections */
+  .access-form-section {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--access-light);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--access-border);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--access-text-light);
+  }
+  
+
+
+</style>
+<div class="access-register-container">
+  <div class="access-register-card">
+    <div class="access-brand">
+      <img src="{% static 'images/bank-logo.png' %}" alt="Bank Logo" class="access-logo" onerror="this.src='/api/placeholder/180/60'; this.onerror=null;">
+      <h2>Open an Account</h2>
+      <p class="access-tagline">Join millions of satisfied customers</p>
+    </div>
+    
+    <div class="access-progress-container">
+      <div class="access-progress-steps">
+        <div class="access-progress-step access-progress-active">
+          <div class="access-step-number">1</div>
+          <div class="access-step-label">Personal Details</div>
+        </div>
+        <div class="access-progress-line"></div>
+        <div class="access-progress-step">
+          <div class="access-step-number">2</div>
+          <div class="access-step-label">Verification</div>
+        </div>
+        <div class="access-progress-line"></div>
+        <div class="access-progress-step">
+          <div class="access-step-number">3</div>
+          <div class="access-step-label">Completion</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="access-account-types">
+      <div class="access-account-option access-option-active" data-type="personal">
+        <div class="access-option-icon">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="access-option-text">
+          <h4>Personal Account</h4>
+          <p>For individual banking needs</p>
+        </div>
+      </div>
+      <div class="access-account-option" data-type="business">
+        <div class="access-option-icon">
+          <i class="fas fa-briefcase"></i>
+        </div>
+        <div class="access-option-text">
+          <h4>Business Account</h4>
+          <p>For companies and organizations</p>
+        </div>
+      </div>
+    </div>
+    
+    <form method="post" class="access-register-form" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <div class="access-form-section">
+        <h3 class="access-section-title">Personal Information</h3>
+        
+        <div class="access-form-row">
+          <div class="access-form-group">
+            <label for="id_first_name">First Name *</label>
+            <input type="text" name="first_name" id="id_first_name" required>
+          </div>
+          <div class="access-form-group">
+            <label for="id_middle_name">Middle Name</label>
+            <input type="text" name="middle_name" id="id_middle_name">
+          </div>
+          <div class="access-form-group">
+            <label for="id_last_name">Last Name *</label>
+            <input type="text" name="last_name" id="id_last_name" required>
+          </div>
+        </div>
+        
+        <div class="access-form-row">
+          <div class="access-form-group">
+            <label for="id_email">Email Address *</label>
+            <input type="email" name="email" id="id_email" required>
+          </div>
+          <div class="access-form-group">
+            <label for="id_dob">Date of Birth *</label>
+            <input type="date" name="date_of_birth" id="id_dob" required>
+          </div>
+        </div>
+        
+        <div class="access-form-row">
+          <div class="access-form-group">
+            <label for="id_phone_number">Phone Number *</label>
+            <div class="access-phone-input">
+              <select name="phone_code" id="id_phone_code">
+                <option value="+234" selected>🇳🇬 +234</option>
+                <option value="+1">🇺🇸 +1</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+33">🇫🇷 +33</option>
+                <option value="+49">🇩🇪 +49</option>
+                <option value="+27">🇿🇦 +27</option>
+              </select>
+              <input type="tel" name="phone_number" id="id_phone_number" placeholder="8012345678" required>
+            </div>
+          </div>
+          <div class="access-form-group">
+            <label for="id_alt_phone">Alternative Phone</label>
+            <div class="access-phone-input">
+              <select name="alt_phone_code" id="id_alt_phone_code">
+                <option value="+234" selected>🇳🇬 +234</option>
+                <option value="+1">🇺🇸 +1</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+33">🇫🇷 +33</option>
+              </select>
+              <input type="tel" name="alt_phone" id="id_alt_phone" placeholder="Optional">
+            </div>
+          </div>
+        </div>
+        
+        <div class="access-form-row">
+          <div class="access-form-group">
+            <label for="id_gender">Gender *</label>
+            <select name="gender" id="id_gender" required>
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Prefer not to say</option>
+            </select>
+          </div>
+          <div class="access-form-group">
+            <label for="id_marital_status">Marital Status *</label>
+            <select name="marital_status" id="id_marital_status" required>
+              <option value="">Select Status</option>
+              <option value="single">Single</option>
+              <option value="married">Married</option>
+              <option value="divorced">Divorced</option>
+              <option value="widowed">Widowed</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="access-form-section">
+        <h3 class="access-section-title">Identity Information</h3>
+        
+        <div class="access-form-row">
+          <div class="access-form-group">
+            <label for="id_id_type">ID Type *</label>
+            <select name="id_type" id="id_id_type" required>
+              <option value="">Select ID Type</option>
+              <option value="nin">National ID (NIN)</option>
+              <option value="bvn">Bank Verification Number (BVN)</option>
+              <option value="drivers_license">Driver's License</option>
+              <option value="passport">International Passport</option>
+              <option value="voters_card">Voter's Card</option>
+            </select>
+          </div>
+          <div class="access-form-group">
+            <label for="id_id_number">ID Number *</label>
+            <input type="text" name="id_number" id="id_id_number" placeholder="Enter ID number" required>
+          </div>
+        </div>
+
+        <div class="access-form-row">
+          <div class="access-form-group">
+            <label for="id_bvn">BVN (Bank Verification Number)</label>
+            <input type="text" name="bvn" id="id_bvn" placeholder="11-digit BVN" maxlength="11">
+            <small class="access-field-note">Required for Nigerian residents</small>
+          </div>
+          <div class="access-form-group">
+            <label for="id_nin">NIN (National Identification Number) *</label>
+            <input type="text" name="nin" id="id_nin" placeholder="11-digit NIN" maxlength="11" required>
+            <small class="access-field-note">Must be exactly 11 digits</small>
+          </div>
+        </div>
+      </div>
+      
+      <div class="access-form-section">
+        <h3 class="access-section-title">Address Information</h3>
+        
+        <div class="access-form-group">
+          <label for="id_address">Street Address *</label>
+          <textarea name="address" id="id_address" rows="2" placeholder="Enter your full address" required></textarea>
+        </div>
+        
+        <div class="access-form-row">
+          <div class="access-form-group">
+            <label for="id_city">City *</label>
+            <input type="text" name="city" id="id_city" required>
+          </div>
+          <div class="access-form-group">
+            <label for="id_state">State *</label>
+            <select name="state" id="id_state" required>
+              <option value="">Select State</option>
+              <option value="abia">Abia</option>
+              <option value="adamawa">Adamawa</option>
+              <option value="akwa_ibom">Akwa Ibom</option>
+              <option value="anambra">Anambra</option>
+              <option value="bauchi">Bauchi</option>
+              <option value="bayelsa">Bayelsa</option>
+              <option value="benue">Benue</option>
+              <option value="borno">Borno</option>
+              <option value="cross_river">Cross River</option>
+              <option value="delta">Delta</option>
+              <option value="ebonyi">Ebonyi</option>
+              <option value="edo">Edo</option>
+              <option value="ekiti">Ekiti</option>
+              <option value="enugu">Enugu</option>
+              <option value="fct">FCT Abuja</option>
+              <option value="gombe">Gombe</option>
+              <option value="imo">Imo</option>
+              <option value="jigawa">Jigawa</option>
+              <option value="kaduna">Kaduna</option>
+              <option value="kano">Kano</option>
+              <option value="katsina">Katsina</option>
+              <option value="kebbi">Kebbi</option>
+              <option value="kogi">Kogi</option>
+              <option value="kwara">Kwara</option>
+              <option value="lagos">Lagos</option>
+              <option value="nasarawa">Nasarawa</option>
+              <option value="niger">Niger</option>
+              <option value="ogun">Ogun</option>
+              <option value="ondo">Ondo</option>
+              <option value="osun">Osun</option>
+              <option value="oyo">Oyo</option>
+              <option value="plateau">Plateau</option>
+              <option value="rivers">Rivers</option>
+              <option value="sokoto">Sokoto</option>
+              <option value="taraba">Taraba</option>
+              <option value="yobe">Yobe</option>
+              <option value="zamfara">Zamfara</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="access-form-row">
+          <div class="access-form-group">
+            <label for="id_country">Country *</label>
+            <select name="country" id="id_country" required>
+              <option value="nigeria" selected>Nigeria</option>
+              <option value="ghana">Ghana</option>
+              <option value="south_africa">South Africa</option>
+              <option value="kenya">Kenya</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="access-form-group">
+            <label for="id_postal_code">Postal Code</label>
+            <input type="text" name="postal_code" id="id_postal_code">
+          </div>
+        </div>
+      </div>
+
+      <div class="access-form-section">
+        <h3 class="access-section-title">Employment Information</h3>
+        
+        <div class="access-form-row">
+          <div class="access-form-group">
+            <label for="id_employment_status">Employment Status *</label>
+            <select name="employment_status" id="id_employment_status" required>
+              <option value="">Select Status</option>
+              <option value="employed">Employed</option>
+              <option value="self_employed">Self Employed</option>
+              <option value="student">Student</option>
+              <option value="unemployed">Unemployed</option>
+              <option value="retired">Retired</option>
+            </select>
+          </div>
+          <div class="access-form-group">
+            <label for="id_occupation">Occupation *</label>
+            <input type="text" name="occupation" id="id_occupation" placeholder="Your job title/profession" required>
+          </div>
+        </div>
+        
+        <div class="access-form-row">
+          <div class="access-form-group">
+            <label for="id_employer">Employer/Company Name</label>
+            <input type="text" name="employer" id="id_employer" placeholder="Company you work for">
+          </div>
+          <div class="access-form-group">
+            <label for="id_monthly_income">Monthly Income Range *</label>
+            <select name="monthly_income" id="id_monthly_income" required>
+              <option value="">Select Range</option>
+              <option value="0-50000">₦0 - ₦50,000</option>
+              <option value="50001-100000">₦50,001 - ₦100,000</option>
+              <option value="100001-200000">₦100,001 - ₦200,000</option>
+              <option value="200001-500000">₦200,001 - ₦500,000</option>
+              <option value="500001-1000000">₦500,001 - ₦1,000,000</option>
+              <option value="1000000+">Above ₦1,000,000</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="access-form-section">
+        <h3 class="access-section-title">Next of Kin Information</h3>
+        
+        <div class="access-form-row">
+          <div class="access-form-group">
+            <label for="id_next_of_kin_name">Full Name *</label>
+            <input type="text" name="next_of_kin_name" id="id_next_of_kin_name" required>
+          </div>
+          <div class="access-form-group">
+            <label for="id_next_of_kin_relationship">Relationship *</label>
+            <select name="next_of_kin_relationship" id="id_next_of_kin_relationship" required>
+              <option value="">Select Relationship</option>
+              <option value="spouse">Spouse</option>
+              <option value="parent">Parent</option>
+              <option value="child">Child</option>
+              <option value="sibling">Sibling</option>
+              <option value="friend">Friend</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="access-form-row">
+          <div class="access-form-group">
+            <label for="id_next_of_kin_phone">Phone Number *</label>
+            <div class="access-phone-input">
+              <select name="next_of_kin_phone_code" id="id_next_of_kin_phone_code">
+                <option value="+234" selected>🇳🇬 +234</option>
+                <option value="+1">🇺🇸 +1</option>
+                <option value="+44">🇬🇧 +44</option>
+              </select>
+              <input type="tel" name="next_of_kin_phone" id="id_next_of_kin_phone" required>
+            </div>
+          </div>
+          <div class="access-form-group">
+            <label for="id_next_of_kin_email">Email Address</label>
+            <input type="email" name="next_of_kin_email" id="id_next_of_kin_email">
+          </div>
+        </div>
+      </div>
+      
+      <div class="access-form-section">
+        <h3 class="access-section-title">Account Security</h3>
+        
+        <div class="access-form-group">
+          <label for="id_username">Username *</label>
+          <input type="text" name="username" id="id_username" required>
+        </div>
+        
+        <div class="access-form-group">
+          <label for="id_password1">Password *</label>
+          <div class="access-password-input">
+            <input type="password" name="password1" id="id_password1" required>
+            <button type="button" class="access-toggle-password">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="access-password-strength">
+            <div class="access-strength-meter">
+              <div class="access-strength-bar" style="width: 0%"></div>
+            </div>
+            <span class="access-strength-text">Password strength: Too weak</span>
+          </div>
+        </div>
+        
+        <div class="access-form-group">
+          <label for="id_password2">Confirm Password *</label>
+          <div class="access-password-input">
+            <input type="password" name="password2" id="id_password2" required>
+            <button type="button" class="access-toggle-password">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="access-form-group">
+          <label for="id_security_question">Security Question *</label>
+          <select name="security_question" id="id_security_question" required>
+            <option value="">Select a security question</option>
+            <option value="mothers_maiden_name">What is your mother's maiden name?</option>
+            <option value="first_pet">What was the name of your first pet?</option>
+            <option value="childhood_nickname">What was your childhood nickname?</option>
+            <option value="first_school">What was the name of your first school?</option>
+            <option value="birth_city">In what city were you born?</option>
+          </select>
+        </div>
+
+        <div class="access-form-group">
+          <label for="id_security_answer">Security Answer *</label>
+          <input type="text" name="security_answer" id="id_security_answer" required>
+        </div>
+      </div>
+      
+      <div class="access-form-section">
+        <div class="access-checkbox">
+          <input type="checkbox" id="id_terms" name="terms" required>
+          <label for="id_terms">I agree to the <a href="#" target="_blank">Terms & Conditions</a> and <a href="#" target="_blank">Privacy Policy</a> *</label>
+        </div>
+        
+        <div class="access-checkbox">
+          <input type="checkbox" id="id_marketing" name="marketing">
+          <label for="id_marketing">I want to receive marketing communications and promotions</label>
+        </div>
+
+        <div class="access-checkbox">
+          <input type="checkbox" id="id_data_processing" name="data_processing" required>
+          <label for="id_data_processing">I consent to the processing of my personal data for account opening and KYC purposes *</label>
+        </div>
+      </div>
+      
+      <div class="access-captcha">
+        <div class="access-captcha-placeholder">
+          <div class="access-captcha-box">
+            <input type="checkbox" id="id_captcha" required>
+            <label for="id_captcha">I'm not a robot</label>
+          </div>
+          <div class="access-captcha-logo">
+            <img src="/api/placeholder/40/40" alt="Captcha">
+            <span>reCAPTCHA</span>
+          </div>
+        </div>
+      </div>
+      
+      <button type="submit" class="access-register-btn">CONTINUE</button>
+      
+      <div class="access-secure-note">
+        <i class="fas fa-lock"></i> All your data is secured with 256-bit SSL encryption
+      </div>
+    </form>
+    
+    <div class="access-login-prompt">
+      <p>Already have an account? <a href="{% url 'login' %}">Sign In</a></p>
+    </div>
+  </div>
+  
+  <div class="access-register-features">
+    <div class="access-feature">
+      <div class="access-feature-icon">
+        <i class="fas fa-wallet"></i>
+      </div>
+      <div class="access-feature-text">
+        <h3>Zero Account Opening Fee</h3>
+        <p>No minimum balance requirement to open a personal account</p>
+      </div>
+    </div>
+    <div class="access-feature">
+      <div class="access-feature-icon">
+        <i class="fas fa-credit-card"></i>
+      </div>
+      <div class="access-feature-text">
+        <h3>Free Debit Card</h3>
+        <p>Get a free debit card with global acceptance</p>
+      </div>
+    </div>
+    <div class="access-feature">
+      <div class="access-feature-icon">
+        <i class="fas fa-mobile-alt"></i>
+      </div>
+      <div class="access-feature-text">
+        <h3>Mobile Banking</h3>
+        <p>Access your accounts anytime, anywhere with our mobile app</p>
+      </div>
+    </div>
+    <div class="access-feature">
+      <div class="access-feature-icon">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      <div class="access-feature-text">
+        <h3>Secure & Compliant</h3>
+        <p>CBN compliant with advanced security measures</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Toggle password visibility
+  document.querySelectorAll('.access-toggle-password').forEach(button => {
+    button.addEventListener('click', function() {
+      const input = this.parentNode.querySelector('input');
+      const icon = this.querySelector('i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    });
+  });
+  
+  // Account type selection
+  document.querySelectorAll('.access-account-option').forEach(option => {
+    option.addEventListener('click', function() {
+      document.querySelectorAll('.access-account-option').forEach(o => o.classList.remove('access-option-active'));
+      this.classList.add('access-option-active');
+    });
+  });
+  
+  // Password strength meter
+  document.getElementById('id_password1').addEventListener('input', function() {
+    const password = this.value;
+    let strength = 0;
+    
+    if (password.length >= 8) strength += 25;
+    if (password.match(/[A-Z]/)) strength += 25;
+    if (password.match(/[0-9]/)) strength += 25;
+    if (password.match(/[^a-zA-Z0-9]/)) strength += 25;
+    
+    const strengthBar = document.querySelector('.access-strength-bar');
+    const strengthText = document.querySelector('.access-strength-text');
+    
+    strengthBar.style.width = strength + '%';
+    
+    if (strength <= 25) {
+      strengthBar.style.backgroundColor = '#ff4d4d';
+      strengthText.textContent = 'Password strength: Too weak';
+    } else if (strength <= 50) {
+      strengthBar.style.backgroundColor = '#ffa64d';
+      strengthText.textContent = 'Password strength: Weak';
+    } else if (strength <= 75) {
+      strengthBar.style.backgroundColor = '#ffff4d';
+      strengthText.textContent = 'Password strength: Medium';
+    } else {
+      strengthBar.style.backgroundColor = '#4dff4d';
+      strengthText.textContent = 'Password strength: Strong';
+    }
+  });
+
+  // Phone number formatting - updated for phone_number field
+  document.querySelectorAll('input[name="phone_number"], input[type="tel"]').forEach(input => {
+    input.addEventListener('input', function() {
+      // Remove non-numeric characters
+      this.value = this.value.replace(/\D/g, '');
+    });
+  });
+
+  // BVN and NIN validation
+  document.getElementById('id_bvn').addEventListener('input', function() {
+    this.value = this.value.replace(/\D/g, '').substring(0, 11);
+  });
+
+  // NIN validation - ensure exactly 11 digits
+  document.getElementById('id_nin').addEventListener('input', function() {
+    this.value = this.value.replace(/\D/g, '').substring(0, 11);
+  });
+
+  // Form validation before submit
+  document.querySelector('.access-register-form').addEventListener('submit', function(e) {
+    const bvn = document.getElementById('id_bvn').value;
+    const nin = document.getElementById('id_nin').value;
+    const country = document.getElementById('id_country').value;
+    
+    // NIN validation - now required
+    if (!nin || nin.length !== 11) {
+      e.preventDefault();
+      alert('NIN is required and must be exactly 11 digits long.');
+      return false;
+    }
+    
+    // BVN validation for Nigerian residents
+    if (country === 'nigeria' && (!bvn || bvn.length !== 11)) {
+      e.preventDefault();
+      alert('BVN is required for Nigerian residents and must be 11 digits long.');
+      return false;
+    }
+    
+    // Password match validation
+    const password1 = document.getElementById('id_password1').value;
+    const password2 = document.getElementById('id_password2').value;
+    
+    if (password1 !== password2) {
+      e.preventDefault();
+      alert('Passwords do not match.');
+      return false;
+    }
+    
+    return true;
+  });
+
+  // Show/hide BVN requirement based on country
+  document.getElementById('id_country').addEventListener('change', function() {
+    const bvnField = document.getElementById('id_bvn').parentNode;
+    const bvnNote = bvnField.querySelector('.access-field-note');
+    
+    if (this.value === 'nigeria') {
+      document.getElementById('id_bvn').required = true;
+      bvnNote.style.color = '#ff4d4d';
+      bvnNote.textContent = 'Required for Nigerian residents';
+    } else {
+      document.getElementById('id_bvn').required = false;
+      bvnNote.style.color = '#666666';
+      bvnNote.textContent = 'Optional for non-Nigerian residents';
+    }
+  });
+</script>
+
+
+{%endblock%}

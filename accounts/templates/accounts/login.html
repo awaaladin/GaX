@@ -1,0 +1,470 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="access-login-container">
+  <div class="access-login-card">
+    <div class="access-brand">
+      <img src="{% static 'images/bank-logo.png' %}" alt="Bank Logo" class="access-logo" onerror="this.src='/api/placeholder/180/60'; this.onerror=null;">
+      <h2>Welcome Back</h2>
+      <p class="access-tagline">Banking at your convenience</p>
+    </div>
+    
+    <div class="access-login-tabs">
+      <div class="access-tab access-tab-active" data-tab="personal">Personal Banking</div>
+      <div class="access-tab" data-tab="business">Business Banking</div>
+    </div>
+
+    <div class="access-alert-box">
+      <div class="access-alert-icon">
+        <img src="/api/placeholder/24/24" alt="Info">
+      </div>
+      <div class="access-alert-message">
+        Keep your login details secure. Never share your password or OTP.
+      </div>
+    </div>
+    
+    <form method="post" class="access-login-form">
+      {% csrf_token %}
+      <div class="access-form-group">
+        <label for="id_username">Account Number or Email</label>
+        {{ form.username }}
+      </div>
+      <div class="access-form-group">
+        <label for="id_password">Password</label>
+        <div class="access-password-input">
+          {{ form.password }}
+          <button type="button" class="access-toggle-password">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="access-login-options">
+        <div class="access-checkbox">
+          <input type="checkbox" id="remember_me" name="remember_me">
+          <label for="remember_me">Remember me</label>
+        </div>
+        <a href="#" class="access-forgot">Forgot Password?</a>
+      </div>
+      
+      <button type="submit" class="access-login-btn">SIGN IN</button>
+      
+      <div class="access-secure-note">
+        <i class="fas fa-lock"></i> Secured by 256-bit SSL Encryption
+      </div>
+    </form>
+    
+    <div class="access-divider"><span>or</span></div>
+    
+    <div class="access-alt-login">
+      <a href="#" class="access-qr-login">
+        <i class="fas fa-qrcode"></i>
+        <span>Login with QR Code</span>
+      </a>
+      <a href="#" class="access-biometric-login">
+        <i class="fas fa-fingerprint"></i>
+        <span>Biometric Login</span>
+      </a>
+    </div>
+    
+    <div class="access-register-prompt">
+      <p>Don't have an account? <a href="{% url 'register' %}">Open an Account</a></p>
+      <p>Need help? <a href="#">Contact Support</a></p>
+    </div>
+  </div>
+  
+  <div class="access-login-features">
+    <div class="access-feature">
+      <div class="access-feature-icon">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      <div class="access-feature-text">
+        <h3>Secure Banking</h3>
+        <p>Advanced encryption and authentication systems to protect your finances</p>
+      </div>
+    </div>
+    <div class="access-feature">
+      <div class="access-feature-icon">
+        <i class="fas fa-mobile-alt"></i>
+      </div>
+      <div class="access-feature-text">
+        <h3>Mobile Banking</h3>
+        <p>Access your accounts anytime, anywhere with our mobile app</p>
+      </div>
+    </div>
+    <div class="access-feature">
+      <div class="access-feature-icon">
+        <i class="fas fa-headset"></i>
+      </div>
+      <div class="access-feature-text">
+        <h3>24/7 Support</h3>
+        <p>Our customer support team is always available to assist you</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Toggle password visibility
+  document.querySelectorAll('.access-toggle-password').forEach(button => {
+    button.addEventListener('click', function() {
+      const input = this.parentNode.querySelector('input');
+      const icon = this.querySelector('i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    });
+  });
+  
+  // Tab switching
+  document.querySelectorAll('.access-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.access-tab').forEach(t => t.classList.remove('access-tab-active'));
+      this.classList.add('access-tab-active');
+    });
+  });
+</script>
+
+<style>
+  :root {
+    --access-primary: #00337f;
+    --access-secondary: #ffd300;
+    --access-accent: #007236;
+    --access-light: #f5f7fa;
+    --access-border: #e0e0e0;
+    --access-text: #333333;
+    --access-text-light: #666666;
+    --access-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  }
+
+  body {
+    background-color: #f6f8fb;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--access-text);
+  }
+
+  .access-login-container {
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    gap: 2rem;
+  }
+
+  .access-login-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--access-shadow);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 450px;
+    position: relative;
+  }
+
+  .access-brand {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .access-logo {
+    height: 60px;
+    margin-bottom: 1rem;
+  }
+
+  .access-brand h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--access-primary);
+    margin: 0.5rem 0;
+  }
+
+  .access-tagline {
+    color: var(--access-text-light);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .access-login-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--access-border);
+    margin-bottom: 1.5rem;
+  }
+
+  .access-tab {
+    padding: 0.75rem 0;
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--access-text-light);
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .access-tab-active {
+    color: var(--access-primary);
+  }
+
+  .access-tab-active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--access-secondary);
+  }
+
+  .access-alert-box {
+    display: flex;
+    align-items: center;
+    background-color: #fff9e6;
+    border-left: 4px solid var(--access-secondary);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+  }
+
+  .access-alert-icon {
+    margin-right: 0.75rem;
+  }
+
+  .access-alert-message {
+    font-size: 0.85rem;
+    color: var(--access-text);
+  }
+
+  .access-login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .access-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .access-form-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--access-text);
+  }
+
+  .access-form-group input {
+    background-color: var(--access-light);
+    border: 1px solid var(--access-border);
+    border-radius: 6px;
+    padding: 0.85rem 1rem;
+    font-size: 1rem;
+    transition: border 0.3s ease;
+  }
+
+  .access-form-group input:focus {
+    border-color: var(--access-primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 51, 127, 0.1);
+  }
+
+  .access-password-input {
+    position: relative;
+  }
+
+  .access-toggle-password {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--access-text-light);
+    cursor: pointer;
+  }
+
+  .access-login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .access-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .access-checkbox input {
+    accent-color: var(--access-primary);
+  }
+
+  .access-checkbox label {
+    font-size: 0.85rem;
+    color: var(--access-text-light);
+  }
+
+  .access-forgot {
+    font-size: 0.85rem;
+    color: var(--access-primary);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .access-login-btn {
+    background-color: var(--access-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.95rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 0.5rem;
+  }
+
+  .access-login-btn:hover {
+    background-color: #002766;
+  }
+
+  .access-secure-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--access-text-light);
+    margin-top: 1rem;
+  }
+
+  .access-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--access-text-light);
+    font-size: 0.85rem;
+    margin: 1.5rem 0;
+  }
+
+  .access-divider::before, .access-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--access-border);
+  }
+
+  .access-divider span {
+    padding: 0 1rem;
+  }
+
+  .access-alt-login {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .access-qr-login, .access-biometric-login {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: var(--access-light);
+    border: 1px solid var(--access-border);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--access-text);
+    transition: all 0.3s ease;
+  }
+
+  .access-qr-login:hover, .access-biometric-login:hover {
+    border-color: var(--access-primary);
+    background-color: #f0f5ff;
+  }
+
+  .access-qr-login i, .access-biometric-login i {
+    font-size: 1.5rem;
+    color: var(--access-primary);
+  }
+
+  .access-qr-login span, .access-biometric-login span {
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .access-register-prompt {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+
+  .access-register-prompt p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    color: var(--access-text-light);
+  }
+
+  .access-register-prompt a {
+    color: var(--access-primary);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .access-login-features {
+    display: none;
+  }
+
+  @media (min-width: 992px) {
+    .access-login-features {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 350px;
+    }
+
+    .access-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: var(--access-shadow);
+    }
+
+    .access-feature-icon {
+      background-color: var(--access-light);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--access-primary);
+      font-size: 1.2rem;
+    }
+
+    .access-feature-text h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--access-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .access-feature-text p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--access-text-light);
+      line-height: 1.4;
+    }
+  }
+</style>
+{% endblock %}
