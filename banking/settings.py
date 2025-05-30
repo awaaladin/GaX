@@ -66,11 +66,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'banking.wsgi.application'
 
 # DATABASE CONFIG
+db_url = os.getenv('DATABASE_URL', f'sqlite:///{BASE_DIR / "db.sqlite3"}')
+is_postgres = db_url.startswith('postgres://') or db_url.startswith('postgresql://')
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3',
+    'default': dj_database_url.parse(
+        db_url,
         conn_max_age=600,
-        ssl_require=not DEBUG  # Enforce SSL for PostgreSQL on Render
+        ssl_require=is_postgres and not DEBUG
     )
 }
 
