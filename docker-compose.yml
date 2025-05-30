@@ -1,0 +1,11 @@
+﻿
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=0
+    command: gunicorn banking.wsgi:application --bind 0.0.0.0:8000 --workers 3
