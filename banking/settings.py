@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 import dj_database_url
 
-# Load environment variables
+# Load environment variables from .env file
 load_dotenv(Path(__file__).resolve().parent.parent / '.env')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -11,16 +11,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-key-for-dev-only')
 
-# Set DEBUG based on environment
+# Set DEBUG mode based on environment variable
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-# Allow all hosts in dev, restrict in prod
+# Allowed hosts (localhost and any Render hostname if set)
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 RENDER_EXTERNAL_HOSTNAME = os.getenv('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
-# Application definition
+# Installed apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -28,27 +28,29 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'whitenoise.runserver_nostatic',  # keep this before your apps
+    'whitenoise.runserver_nostatic',  # Keep before your apps for static files serving
     'rest_framework',
     'rest_framework.authtoken',
     'accounts',
-    'corsheaders', # ADD THIS LINE
+    'corsheaders',  # For handling CORS
 ]
 
+# Middleware stack
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware', # ADD THIS LINE - place it high up, preferably before CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware',  # Must come before CommonMiddleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',  # Manages X-Frame-Options header
 ]
 
 ROOT_URLCONF = 'banking.urls'
 
+# Templates configuration
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -67,7 +69,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'banking.wsgi.application'
 
-# DATABASE CONFIG
+# Database configuration using dj_database_url
 db_url = os.getenv('DATABASE_URL', f'sqlite:///{BASE_DIR / "db.sqlite3"}')
 is_postgres = db_url.startswith('postgres://') or db_url.startswith('postgresql://')
 
@@ -79,7 +81,7 @@ DATABASES = {
     )
 }
 
-# REST FRAMEWORK CONFIG
+# Django REST Framework configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
@@ -91,7 +93,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-# Password validators
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -99,43 +101,45 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Locale
+# Localization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# STATIC + MEDIA
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# CUSTOM USER
+# Custom user model
 AUTH_USER_MODEL = 'accounts.User'
 
-# Login redirects
+# Login URLs
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGIN_URL = 'login'
 
-# Stripe keys
+# Stripe keys (from environment variables)
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', '')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", '')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS Headers Configuration
-CORS_ALLOW_ALL_ORIGINS = True # For development, allows all origins.
-# In production, replace with specific origins:
+# CORS configuration (allow all origins for development)
+CORS_ALLOW_ALL_ORIGINS = True
+# For production, specify allowed origins instead of CORS_ALLOW_ALL_ORIGINS=True:
 # CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:5000", # Replace with your Flask app's domain
-#     "http://127.0.0.1:5000", # Replace with your Flask app's domain
-#     # Add your Flask app's production URL here
+#     "http://localhost:5000",
+#     "http://127.0.0.1:5000",
+#     # your Flask app domain(s)
 # ]
 
 # Allow embedding pages in iframes only from the same origin
-X_FRAME_OPTIONS = 'SAMEORIGIN'
+X_FRAME_OPTIONS = 'SAMEORIGIN'  # IMPORTANT: This instructs browsers to allow iframe embedding only from the same origin
+
