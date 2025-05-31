@@ -32,12 +32,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'accounts',
+    'corsheaders', # ADD THIS LINE
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware', # ADD THIS LINE - place it high up, preferably before CommonMiddleware
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -125,3 +127,15 @@ STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", '')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CORS Headers Configuration
+CORS_ALLOW_ALL_ORIGINS = True # For development, allows all origins.
+# In production, replace with specific origins:
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5000", # Replace with your Flask app's domain
+#     "http://127.0.0.1:5000", # Replace with your Flask app's domain
+#     # Add your Flask app's production URL here
+# ]
+
+# Allow embedding pages in iframes only from the same origin
+X_FRAME_OPTIONS = 'SAMEORIGIN'
