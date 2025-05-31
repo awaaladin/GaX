@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include # Import include
 from . import views
 from .views import register, LoginView
 from django.contrib.auth import views as auth_views
@@ -26,4 +26,9 @@ urlpatterns = [
     path('buy-data/', views.buy_data, name='buy_data'),
     path('create-stripe-session/', views.create_stripe_session, name='create_stripe_session'),
     path('stripe-webhook/', views.stripe_webhook, name='stripe_webhook'),
+
+    # Include API URLs from the accounts app
+    # This line ensures that paths defined in api_urls.py (like 'dashboard/')
+    # are accessible under the 'api/accounts/' prefix.
+    path('api/accounts/', include('accounts.api_urls')), # ADD THIS LINE
 ]
