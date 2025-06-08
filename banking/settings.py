@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',  # Keep before your apps for static files serving
     'rest_framework',
-    'rest_framework.authtoken',
+    'rest_framework.authtoken',  # Add this line
     'accounts',
     'corsheaders',  # For handling CORS
 ]
@@ -40,7 +40,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # Must come before CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware',  
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -84,9 +84,8 @@ DATABASES = {
 # Django REST Framework configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -131,14 +130,45 @@ STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", '')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS configuration (allow all origins for development)
-CORS_ALLOW_ALL_ORIGINS = True
-# For production, specify allowed origins instead of CORS_ALLOW_ALL_ORIGINS=True:
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:5000",
-#     "http://127.0.0.1:5000",
-#     # your Flask app domain(s)
-# ]
+# CORS configuration
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5000",
+    "http://127.0.0.1:5000",
+    "https://choropiaz-2.onrender.com",
+    "https://gax-2.onrender.com"
+]
+
+# Allow credentials in CORS
+CORS_ALLOW_CREDENTIALS = True
+
+# Allow all CORS methods
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+# Additional CORS settings
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# Security Headers
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
 
 # Allow embedding pages in iframes only from the same origin
 X_FRAME_OPTIONS = 'SAMEORIGIN'  # IMPORTANT: This instructs browsers to allow iframe embedding only from the same origin
