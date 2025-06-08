@@ -10,6 +10,7 @@ from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.http import HttpResponse
+from rest_framework.authtoken import views as rest_framework_views
 from django.views.decorators.http import require_http_methods
 from PIL import Image
 from io import BytesIO
@@ -42,6 +43,9 @@ def placeholder_image(request, width, height):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
+    # API Token authentication
+    path('api/token-auth/', rest_framework_views.obtain_auth_token, name='api-token'),
 
     # Dashboard views
     path('', account_views.dashboard, name='home'),  # Root URL

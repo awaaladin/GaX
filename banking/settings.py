@@ -131,15 +131,16 @@ STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", '')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS configuration
+CORS_ORIGIN_ALLOW_ALL = True  # Allow all origins temporarily for testing
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5000",
     "http://127.0.0.1:5000",
     "https://choropiaz-2.onrender.com",
-    "https://gax-2.onrender.com"
+    "https://gax-2.onrender.com",
+    "http://choropiaz-2.onrender.com",
+    "http://gax-2.onrender.com"
 ]
-
-# Allow credentials in CORS
-CORS_ALLOW_CREDENTIALS = True
 
 # Allow all CORS methods
 CORS_ALLOW_METHODS = [
