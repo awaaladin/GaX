@@ -9,10 +9,8 @@ from decimal import Decimal
 import re
 
 class User(AbstractUser):
-    phone_number = models.CharField(max_length=15, unique=True, blank=False, null=False)  # Make required
-    address = models.CharField(max_length=255, blank=True, null=True)
-    full_name = models.CharField(max_length=100, blank=True, null=True)
-    age = models.IntegerField(blank=True, null=True)
+    phone_number = models.CharField(max_length=15, unique=True, null=True, blank=True)
+    address = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return self.username
@@ -32,6 +30,13 @@ class User(AbstractUser):
             pass
 
         return cleaned if len(cleaned) == 11 and cleaned.startswith('0') else None
+
+    def save(self, *args, **kwargs):
+        if not self.phone_number and hasattr(self, '_phone_number'):
+            self.phone_number = self._phone_number
+        if not self.address and hasattr(self, '_address'):
+            self.address = self._address
+        super().save(*args, **kwargs)
 
 
 # Profile model - this was missing!
@@ -72,16 +77,27 @@ class BankAccount(models.Model):
     )
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    account_number = models.CharField(max_length=15, unique=True, blank=True)
+    account_number = models.CharField(max_length=15, unique=True, blank=True, null=True)
     account_type = models.CharField(max_length=20, choices=ACCOUNT_TYPES, default='savings')
     balance = models.DecimalField(default=0.00, max_digits=12, decimal_places=2)
     is_frozen = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @staticmethod
+    def generate_account_number():
+        """Generate a random 10-digit account number"""
+        while True:
+            account_number = str(uuid.uuid4().int)[:10]
+            if not BankAccount.objects.filter(account_number=account_number).exists():
+                return account_number
+
     def save(self, *args, **kwargs):
-        if not self.account_number and self.user:
-            cleaned_phone = self.user.clean_phone_number()
-            self.account_number = cleaned_phone or self.user.phone_number
+        if not self.account_number:
+            if self.user and self.user.phone_number:
+                cleaned_phone = self.user.clean_phone_number()
+                self.account_number = cleaned_phone or self.user.phone_number
+            else:
+                self.account_number = self.generate_account_number()
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -200,7 +216,7 @@ def create_user_profile_and_account(sender, instance, created, **kwargs):
                 'phone_number': cleaned_phone or instance.phone_number,
                 'phone': cleaned_phone or instance.phone_number,
                 'balance': 0.00,
-                'name': instance.full_name
+                'name': instance.username
             }
         )
 
