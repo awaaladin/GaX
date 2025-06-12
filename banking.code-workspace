@@ -1,0 +1,13 @@
+{
+    "folders": [
+        {
+            "name": "Banking API",
+            "path": "."
+        },
+        {
+            "name": "CHOROPIA Flask",
+            "path": "../CHOROPIA"
+        }
+    ],
+    "settings": {}
+}

@@ -22,15 +22,31 @@ class Command(BaseCommand):
             self.stderr.write('Error: Password is required')
             return
 
-        address = input('Address (optional): ').strip()
-        
+        phone = input('Phone number: ').strip()
+        if not phone:
+            self.stderr.write('Error: Phone number is required')
+            return
+
+        address = input('Address: ').strip()
+        if not address:
+            self.stderr.write('Error: Address is required')
+            return
+
         try:
             User.objects.create_superuser(
                 username=username,
                 email=email,
                 password=password,
-                address=address if address else None
+                phone_number=phone,
+                address=address
             )
             self.stdout.write(self.style.SUCCESS('Superuser created successfully'))
         except Exception as e:
-            self.stderr.write(f'Error: {str(e)}')
+            self.stderr.write(f'Error: {str(e)}')User.objects.create_superuser(
+            username=username,
+            email=email,
+            password=password,
+            phone_number=phone_number,
+            address=address
+        )
+        self.stdout.write(self.style.SUCCESS('Superuser created successfully.'))
