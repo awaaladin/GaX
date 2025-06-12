@@ -1,0 +1,836 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-gradient-to-b from-gray-900 to-blue-900 dark:from-choropia-gray dark:to-white min-h-screen text-white dark:text-choropia-text">
+  <div class="container mx-auto px-4 py-6">
+    <div class="flex flex-col md:flex-row gap-4">
+      <div class="w-full md:w-1/4 lg:w-1/5 hidden md:block">
+        <div class="bg-gray-800 dark:bg-white rounded-xl shadow-lg p-4 sticky top-4 border border-gray-700 dark:border-gray-200">
+          <div class="space-y-1">
+            <a href="{{ url_for('views.home') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-800 transition">
+              <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl mr-3">
+                <i class="bi bi-house-door"></i>
+              </div>
+              <span class="font-medium">Home</span>
+            </a>
+            <a href="{{ url_for('views.profile') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-800 transition">
+              <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl mr-3">
+                <i class="bi bi-person-circle"></i>
+              </div>
+              <span class="font-medium">Profile</span>
+            </a>
+            <a href="{{ url_for('views.create_post') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-800 transition">
+              <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl mr-3">
+                <i class="bi bi-plus-circle"></i>
+              </div>
+              <span class="font-medium">Create Post</span>
+            </a>
+            <a href="{{ url_for('views.reels') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-800 transition">
+              <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl mr-3">
+                <i class="bi bi-camera-reels"></i>
+              </div>
+              <span class="font-medium">Reels</span>
+            </a>
+            <a href="{{ url_for('messages.inbox') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-800 transition">
+              <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl mr-3">
+                <i class="bi bi-envelope"></i>
+              </div>
+              <span class="font-medium">Messages</span>
+            </a>
+            <a href="{{ url_for('notifications.view_notifications') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-800 transition relative">
+              <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl mr-3">
+                <i class="bi bi-bell"></i>
+              </div>
+              <span class="font-medium">Notifications</span>
+              <span id="notification-count" class="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full"></span>
+            </a>
+            <a href="{{ url_for('views.settings') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-800 transition">
+              <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl mr-3">
+                <i class="bi bi-gear"></i>
+              </div>
+              <span class="font-medium">Settings</span>
+            </a>
+            <a href="{{ url_for('auth.logout') }}" class="flex items-center p-3 rounded-lg hover:bg-blue-800 transition">
+              <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl mr-3">
+                <i class="bi bi-box-arrow-right"></i>
+              </div>
+              <span class="font-medium">Logout</span>
+            </a>
+            <a href="#" onclick="toggleBankingSection()" class="flex items-center p-3 rounded-lg hover:bg-blue-800 transition">
+              <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl mr-3">
+                <i class="bi bi-bank"></i>
+              </div>
+              <span class="font-medium">Banking</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Banking Section -->
+      <div id="banking-section" class="hidden w-full md:w-2/3 lg:w-3/5">
+        <div class="bg-gray-800 dark:bg-white rounded-xl shadow-lg p-4 mb-4">
+          <div class="aspect-w-16 aspect-h-9">
+            <iframe 
+              id="banking-iframe"
+              src="https://gax-2.onrender.com" 
+              class="w-full h-[600px] rounded-lg"
+              frameborder="0"
+              allowtransparency="true"
+              allowfullscreen="true"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rest of the feed content -->
+      <div id="feed-section" class="w-full md:w-2/3 lg:w-3/5">
+        <div class="bg-gray-800 dark:bg-white rounded-xl shadow-lg p-4 mb-4 border border-gray-700 dark:border-gray-200">
+          <h2 class="text-xl font-bold mb-4 dark:text-choropia-blue">Top Weekly Highlights by Category</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {% for category, posts_in_category in top_weekly_posts.items() %}
+              {% if posts_in_category %}
+                <div class="story-item relative w-full h-32 bg-cover bg-center rounded-lg overflow-hidden shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
+                     style="background-image: url('{{ url_for('static', filename=posts_in_category[0].media_path) if posts_in_category[0].media_path else url_for('static', filename='default.jpg') }}');">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80"></div>
+                  <div class="absolute bottom-2 left-2 right-2 text-white p-1">
+                    <p class="text-sm font-semibold truncate">{{ category }}</p>
+                    <p class="text-xs">{{ posts_in_category[0].caption[:20] }}...</p>
+                    <a href="{{ url_for('views.user_profile', username=posts_in_category[0].user.username) }}" class="text-white text-xs font-medium truncate block">View Profile</a>
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        
+        <div class="bg-gray-800 dark:bg-white rounded-xl shadow-lg p-4 mb-4 border border-gray-700 dark:border-gray-200">
+          <div class="flex items-center mb-4">
+            <img src="{{ url_for('static', filename='profile_pics/' + current_user.profile_picture) }}" alt="Profile" class="w-10 h-10 rounded-full mr-3">
+            <a href="{{ url_for('views.profile') }}" class="font-semibold text-lg dark:text-choropia-blue">{{ current_user.username }}</a>
+          </div>
+          <form id="create-post-form" method="POST" action="{{ url_for('views.create_post') }}" enctype="multipart/form-data">
+            <textarea name="content" placeholder="What's on your mind, {{ current_user.username }}?" class="w-full p-3 bg-gray-700 dark:bg-gray-100 rounded-lg border border-gray-600 dark:border-gray-300 focus:outline-none focus:border-blue-500 dark:focus:border-choropia-blue text-white dark:text-choropia-text mb-3"></textarea>
+            
+            <div class="mb-3">
+                <label for="category" class="block text-sm font-medium text-gray-400 mb-1">Category</label>
+                <select id="category" name="category" class="w-full p-2 bg-gray-700 rounded-lg border border-gray-600 focus:outline-none focus:border-blue-500 text-white">
+                    {% for category_name, category_value in form.category.choices %}
+                        <option value="{{ category_name }}" {% if loop.index == 1 %}selected{% endif %}>{{ category_value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="media_upload" class="block text-sm font-medium text-gray-400 mb-1">Upload Media</label>
+                <input type="file" id="media_upload" name="media" accept="image/*,video/*" class="w-full text-white bg-gray-700 rounded-lg border border-gray-600 p-2 cursor-pointer">
+                <input type="hidden" id="media_type" name="media_type" value="">
+            </div>
+
+            <div class="flex items-center mb-3">
+                <input type="checkbox" id="is_purchasable" name="is_purchasable" class="mr-2 form-checkbox h-5 w-5 text-blue-600 transition duration-150 ease-in-out">
+                <label for="is_purchasable" class="text-sm font-medium text-gray-400">Make Purchasable?</label>
+            </div>
+
+            <div id="price_field" class="mb-3 hidden">
+                <label for="price" class="block text-sm font-medium text-gray-400 mb-1">Price ($)</label>
+                <input type="number" id="price" name="price" step="0.01" class="w-full p-2 bg-gray-700 rounded-lg border border-gray-600 focus:outline-none focus:border-blue-500 text-white" placeholder="e.g., 9.99">
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 dark:bg-choropia-blue hover:bg-blue-700 dark:hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Post</button>
+          </form>
+        </div>
+
+        <div class="flex justify-between items-center bg-gray-800 dark:bg-white rounded-xl shadow-lg p-4 mb-4 border border-gray-700 dark:border-gray-200">
+            <div class="sort-options">
+                <span class="text-gray-400 dark:text-choropia-secondary mr-2">Sort by:</span>
+                <a href="{{ url_for('views.home', sort='recent', search=search_query) }}" class="px-3 py-1 rounded-full text-sm {% if sort == 'recent' %}bg-blue-600{% else %}bg-gray-700 dark:bg-gray-600 hover:bg-gray-600{% endif %}">Recent</a>
+                <a href="{{ url_for('views.home', sort='likes', search=search_query) }}" class="ml-2 px-3 py-1 rounded-full text-sm {% if sort == 'likes' %}bg-blue-600{% else %}bg-gray-700 dark:bg-gray-600 hover:bg-gray-600{% endif %}">Likes</a>
+                <a href="{{ url_for('views.home', sort='trending', search=search_query) }}" class="ml-2 px-3 py-1 rounded-full text-sm {% if sort == 'trending' %}bg-blue-600{% else %}bg-gray-700 dark:bg-gray-600 hover:bg-gray-600{% endif %}">Trending</a>
+            </div>
+            <div class="search-bar">
+                <form action="{{ url_for('views.home') }}" method="GET" class="flex items-center">
+                    <input type="text" name="search" placeholder="Search posts..." class="p-2 rounded-lg bg-gray-700 dark:bg-gray-100 border border-gray-600 dark:border-gray-300 focus:outline-none focus:border-blue-500 dark:focus:border-choropia-blue text-white dark:text-choropia-text" value="{{ search_query or '' }}">
+                    <button type="submit" class="ml-2 bg-blue-600 dark:bg-choropia-blue hover:bg-blue-700 dark:hover:bg-blue-800 text-white p-2 rounded-lg">Search</button>
+                    {% if sort %}
+                        <input type="hidden" name="sort" value="{{ sort }}">
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+        <div id="posts-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {% for post in posts %}
+          <div class="post-card bg-gray-800 dark:bg-white rounded-xl shadow-lg p-4 mb-4 border border-gray-700 dark:border-gray-200 animate-fadeIn" data-post-id="{{ post.id }}">
+            <div class="flex items-center mb-3">
+              <img src="{{ url_for('static', filename='profile_pics/' + post.user.profile_picture) }}" alt="Profile" class="w-12 h-12 rounded-full mr-3">
+              <div>
+                <a href="{{ url_for('views.user_profile', username=post.user.username) }}" class="font-semibold text-lg hover:underline dark:text-choropia-blue">{{ post.user.username }}</a>
+                <p class="text-gray-400 dark:text-choropia-secondary text-sm">{{ post.timestamp.strftime('%B %d, %Y at %H:%M') }}</p>
+              </div>
+              <div class="ml-auto flex items-center">
+                {% if post.user.id != current_user.id %}
+                <button class="follow-button px-3 py-1 rounded-full text-sm font-medium transition-colors duration-200
+                  {% if is_following and user.id == post.user.id %} bg-blue-600 text-white {% else %} bg-gray-700 text-gray-300 hover:bg-blue-600 hover:text-white {% endif %}"
+                  data-user-id="{{ post.user.id }}">
+                  {% if current_user.is_following(post.user) %} Unfollow {% else %} Follow {% endif %}
+                </button>
+                {% endif %}
+              </div>
+            </div>
+            <p class="text-gray-200 dark:text-choropia-text mb-3">{{ post.caption }}</p>
+            {% if post.media_path %}
+              {% if post.media_type == 'image' %}
+                <img data-src="{{ url_for('static', filename=post.media_path) }}" alt="Post Image by {{ post.user.username }}" title="{{ post.caption }}" class="w-full rounded-lg mb-3 lazyload">
+              {% elif post.media_type == 'video' %}
+                <div class="relative mb-3 video-container">
+                  <video data-src="{{ url_for('static', filename=post.media_path) }}" class="w-full rounded-lg lazyload" controls preload="none" title="{{ post.caption }}">
+                    <source data-src="{{ url_for('static', filename=post.media_path) }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  <div class="play-button absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 dark:bg-white dark:bg-opacity-30 text-white dark:text-choropia-blue text-5xl rounded-lg cursor-pointer">▶</div>
+                </div>
+              {% endif %}
+            {% endif %}
+
+            {% if post.is_purchasable and post.price %}
+            <div class="flex items-center justify-between bg-gray-700 p-3 rounded-lg mb-3">
+              <span class="text-lg font-bold text-green-400">${{ "%.2f"|format(post.price) }}</span>
+              <button class="buy-item-button bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                      data-post-id="{{ post.id }}"
+                      data-post-name="{{ post.caption }}"
+                      data-post-price="{{ (post.price * 100) | int }}">
+                Buy Now
+              </button>
+            </div>
+            {% endif %}
+
+            <div class="flex items-center justify-between text-gray-400 text-sm mb-3">
+              <div class="flex items-center space-x-4">
+                <button class="flex items-center space-x-1 like-button {% if current_user.has_liked_post(post) %}text-blue-500{% else %}hover:text-blue-400{% endif %}" data-post-id="{{ post.id }}">
+                  <i class="fas fa-heart"></i>
+                  <span class="likes-count">{{ post.likes|length }}</span>
+                </button>
+                <a href="{{ url_for('views.view_post', post_id=post.id) }}" class="flex items-center space-x-1 hover:text-blue-400">
+                  <i class="fas fa-comment"></i>
+                  <span>{{ post.comments|length }}</span>
+                </a>
+                <button class="flex items-center space-x-1 hover:text-blue-400">
+                  <i class="fas fa-share"></i>
+                  <span>Share</span>
+                </button>
+              </div>
+              <div>
+                  <span>{{ post.views or 0 }} Views</span>
+              </div>
+            </div>
+
+            <div class="comments-section">
+                {% for comment in post.comments | sort(attribute='timestamp', reverse=True) %}
+                    <div class="flex items-start mb-2">
+                        <img src="{{ url_for('static', filename='profile_pics/' + comment.user.profile_picture) }}" alt="Profile" class="w-8 h-8 rounded-full mr-2 mt-1">
+                        <div>
+                            <p class="text-gray-300"><a href="{{ url_for('views.user_profile', username=comment.user.username) }}" class="font-semibold hover:underline">{{ comment.user.username }}</a> {{ comment.content }}</p>
+                            <p class="text-gray-500 text-xs">{{ comment.timestamp.strftime('%b %d, %Y') }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+                <form class="flex items-center mt-3 comment-form" data-post-id="{{ post.id }}">
+                    <input type="text" name="comment_content" placeholder="Add a comment..." class="w-full p-2 bg-gray-700 rounded-lg border border-gray-600 focus:outline-none focus:border-blue-500 text-white text-sm">
+                    <button type="submit" class="ml-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">Comment</button>
+                </form>
+            </div>
+            {% if post.user.id == current_user.id %}
+            <div class="mt-4 flex justify-end">
+                <form class="delete-post-form" data-post-id="{{ post.id }}">
+                    <button type="submit" class="text-red-500 hover:text-red-600 text-sm">Delete Post</button>
+                </form>
+            </div>
+            {% endif %}
+          </div>
+          {% else %}
+          <p class="text-center text-gray-400 dark:text-choropia-secondary col-span-2">No posts to display. Be the first to post!</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="w-full md:w-1/4 lg:w-1/5 hidden lg:block">
+        <div class="bg-gray-800 rounded-xl shadow-lg p-4 sticky top-4 border border-gray-700">
+          <h2 class="text-xl font-bold mb-4">Account Dashboard</h2>
+          {% if bank_data %}
+            <div class="space-y-3 text-sm">
+              <p class="flex justify-between items-center">
+                <span>Account Number:</span>
+                <span class="font-semibold">{{ bank_data.account_number }}</span>
+              </p>
+              <p class="flex justify-between items-center">
+                <span>Account Balance:</span>
+                <span class="font-semibold text-green-400">${{ "%.2f"|format(bank_data.balance) }}</span>
+              </p>
+              <p class="flex justify-between items-center">
+                <span>Card Number:</span>
+                <span class="font-semibold">{{ bank_data.card_number }}</span>
+              </p>
+              <div class="flex justify-around mt-4">
+                <a href="{{ DJANGO_WEB_APP_BASE_URL }}/accounts/deposit/" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-lg text-xs">Deposit</a>
+                <button type="button" onclick="openSendMoneyModal()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-3 rounded-lg text-xs">Send Money</button>
+              </div>
+            </div>
+          {% else %}
+            <p class="text-gray-400 text-sm">Banking details not available. <a href="{{ DJANGO_WEB_APP_BASE_URL }}/accounts/login/" target="_blank" class="text-blue-500 hover:underline">Link your account.</a></p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 md:hidden z-50">
+  <div class="flex justify-around items-center h-16">
+    <a href="{{ url_for('views.home') }}" class="py-3 flex flex-col items-center text-blue-500">
+      <i class="fas fa-home text-xl"></i>
+      <span class="text-xs">Home</span>
+    </a>
+    <a href="{{ url_for('views.reels') }}" class="py-3 flex flex-col items-center text-choropia-secondary hover:text-choropia-blue">
+      <i class="fas fa-film text-xl"></i>
+      <span class="text-xs">Reels</span>
+    </a>
+    <button onclick="openCreatePostModal()" class="py-3 flex flex-col items-center text-choropia-secondary hover:text-choropia-blue">
+      <i class="fas fa-plus-circle text-xl"></i>
+      <span class="text-xs">Post</span>
+    </button>
+    <a href="{{ url_for('messages.inbox') }}" class="py-3 flex flex-col items-center text-choropia-secondary hover:text-choropia-blue">
+      <i class="fas fa-envelope text-xl"></i>
+      <span class="text-xs">Messages</span>
+    </a>
+    <a href="{{ url_for('views.profile') }}" class="py-3 flex flex-col items-center text-choropia-secondary hover:text-choropia-blue">
+      <i class="fas fa-user-circle text-xl"></i>
+      <span class="text-xs">Profile</span>
+    </a>
+  </div>
+</div>
+
+<div id="createPostModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+    <div class="bg-gray-800 rounded-lg p-6 w-11/12 md:w-1/2 lg:w-1/3 relative text-white border border-gray-700">
+        <button onclick="closeCreatePostModal()" class="absolute top-3 right-3 text-gray-400 hover:text-white text-xl">&times;</button>
+        <h2 class="text-2xl font-bold mb-4">Create New Post</h2>
+        <form id="modal-create-post-form" method="POST" action="{{ url_for('views.create_post') }}" enctype="multipart/form-data">
+            <textarea name="content" placeholder="What's on your mind, {{ current_user.username }}?" class="w-full p-3 bg-gray-700 dark:bg-gray-100 rounded-lg border border-gray-600 dark:border-gray-300 focus:outline-none focus:border-blue-500 dark:focus:border-choropia-blue text-white dark:text-choropia-text mb-3"></textarea>
+            
+            <div class="mb-3">
+                <label for="modal_category" class="block text-sm font-medium text-gray-400 mb-1">Category</label>
+                <select id="modal_category" name="category" class="w-full p-2 bg-gray-700 rounded-lg border border-gray-600 focus:outline-none focus:border-blue-500 text-white">
+                    {% for category_name, category_value in form.category.choices %}
+                        <option value="{{ category_name }}" {% if loop.index == 1 %}selected{% endif %}>{{ category_value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="modal_media_upload" class="block text-sm font-medium text-gray-400 mb-1">Upload Media</label>
+                <input type="file" id="modal_media_upload" name="media" accept="image/*,video/*" class="w-full text-white bg-gray-700 rounded-lg border border-gray-600 p-2 cursor-pointer">
+                <input type="hidden" id="modal_media_type" name="media_type" value="">
+            </div>
+
+            <div class="flex items-center mb-3">
+                <input type="checkbox" id="modal_is_purchasable" name="is_purchasable" class="mr-2 form-checkbox h-5 w-5 text-blue-600 transition duration-150 ease-in-out">
+                <label for="modal_is_purchasable" class="text-sm font-medium text-gray-400">Make Purchasable?</label>
+            </div>
+
+            <div id="modal_price_field" class="mb-3 hidden">
+                <label for="modal_price" class="block text-sm font-medium text-gray-400 mb-1">Price ($)</label>
+                <input type="number" id="modal_price" name="price" step="0.01" class="w-full p-2 bg-gray-700 rounded-lg border border-gray-600 focus:outline-none focus:border-blue-500 text-white" placeholder="e.g., 9.99">
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 dark:bg-choropia-blue hover:bg-blue-700 dark:hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Post</button>
+        </form>
+    </div>
+</div>
+
+<div id="sendMoneyModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+    <div class="bg-gray-800 rounded-lg p-6 w-11/12 md:w-1/2 lg:w-1/3 relative text-white border border-gray-700">
+        <button onclick="closeSendMoneyModal()" class="absolute top-3 right-3 text-gray-400 hover:text-white text-xl">&times;</button>
+        <h2 class="text-2xl font-bold mb-4">Send Money</h2>
+        <form id="send-money-form" action="{{ url_for('views.send_money') }}" method="POST">
+            <div class="mb-4">
+                <label for="recipient_username" class="block text-gray-400 text-sm font-bold mb-2">Recipient Username:</label>
+                <input type="text" id="recipient_username" name="recipient_username" required class="shadow appearance-none border rounded w-full py-2 px-3 bg-gray-700 text-white leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+            <div class="mb-4">
+                <label for="amount" class="block text-gray-400 text-sm font-bold mb-2">Amount ($):</label>
+                <input type="number" id="amount" name="amount" step="0.01" min="0.01" required class="shadow appearance-none border rounded w-full py-2 px-3 bg-gray-700 text-white leading-tight focus:outline-none focus:shadow-outline">
+            </div>
+            <div class="mb-4">
+                <label for="description" class="block text-gray-400 text-sm font-bold mb-2">Description (Optional):</label>
+                <textarea id="description" name="description" class="shadow appearance-none border rounded w-full py-2 px-3 bg-gray-700 text-white leading-tight focus:outline-none focus:shadow-outline"></textarea>
+            </div>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">Send Money</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  // Stripe integration (if needed for direct payments, not just Django banking)
+  const stripe = Stripe('{{ STRIPE_PUBLIC_KEY }}'); // Your Stripe publishable key
+
+  document.querySelectorAll('.buy-item-button').forEach(button => {
+    button.addEventListener('click', async (event) => {
+      const postId = event.target.dataset.postId;
+      const postName = event.target.dataset.postName;
+      const postPrice = parseInt(event.target.dataset.postPrice); // Price in cents
+
+      try {
+        const response = await fetch('{{ DJANGO_WEB_APP_BASE_URL }}/payments/create-checkout-session/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken') // Assuming Django CSRF token, adapt if Flask
+          },
+          body: JSON.stringify({
+            post_id: postId,
+            item_name: postName,
+            price: postPrice,
+            quantity: 1
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to create Stripe checkout session.');
+        }
+
+        const session = await response.json();
+
+        const result = await stripe.redirectToCheckout({
+          sessionId: session.sessionId
+        });
+
+        if (result.error) {
+          alert(result.error.message);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred during the purchase process. Please try again.');
+      }
+    });
+  });
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  // --- Modals JS ---
+  const createPostModal = document.getElementById('createPostModal');
+  const sendMoneyModal = document.getElementById('sendMoneyModal');
+
+  function openCreatePostModal() {
+    createPostModal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden'); // Prevent scrolling
+  }
+
+  function closeCreatePostModal() {
+    createPostModal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  function openSendMoneyModal() {
+    sendMoneyModal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+  }
+
+  function closeSendMoneyModal() {
+    sendMoneyModal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  // Close modals if clicking outside
+  window.addEventListener('click', function(event) {
+    if (event.target == createPostModal) {
+      closeCreatePostModal();
+    }
+    if (event.target == sendMoneyModal) {
+      closeSendMoneyModal();
+    }
+  });
+
+  // Handle media file type for post creation
+  document.getElementById('media_upload').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const mediaTypeInput = document.getElementById('media_type');
+    if (file) {
+      if (file.type.startsWith('image/')) {
+        mediaTypeInput.value = 'image';
+      } else if (file.type.startsWith('video/')) {
+        mediaTypeInput.value = 'video';
+      } else {
+        mediaTypeInput.value = '';
+      }
+    } else {
+      mediaTypeInput.value = '';
+    }
+  });
+
+  document.getElementById('modal_media_upload').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const mediaTypeInput = document.getElementById('modal_media_type');
+    if (file) {
+      if (file.type.startsWith('image/')) {
+        mediaTypeInput.value = 'image';
+      } else if (file.type.startsWith('video/')) {
+        mediaTypeInput.value = 'video';
+      } else {
+        mediaTypeInput.value = '';
+      }
+    } else {
+      mediaTypeInput.value = '';
+    }
+  });
+
+
+  // Toggle price field based on "is_purchasable" checkbox
+  document.getElementById('is_purchasable').addEventListener('change', function() {
+    document.getElementById('price_field').classList.toggle('hidden', !this.checked);
+  });
+  document.getElementById('modal_is_purchasable').addEventListener('change', function() {
+    document.getElementById('modal_price_field').classList.toggle('hidden', !this.checked);
+  });
+
+  // --- Like button functionality ---
+  document.querySelectorAll('.like-button').forEach(button => {
+    button.addEventListener('click', function() {
+      const postId = this.dataset.postId;
+      fetch(`{{ url_for('views.like_post', post_id=0) }}`.replace('0', postId), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.liked !== undefined) {
+          const likesCountSpan = this.querySelector('.likes-count');
+          likesCountSpan.textContent = data.likes_count;
+          if (data.liked) {
+            this.classList.add('text-blue-500');
+            this.classList.remove('hover:text-blue-400');
+          } else {
+            this.classList.remove('text-blue-500');
+            this.classList.add('hover:text-blue-400');
+          }
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    });
+  });
+
+  // --- Follow button functionality ---
+  document.querySelectorAll('.follow-button').forEach(button => {
+    button.addEventListener('click', function() {
+      const userId = this.dataset.userId;
+      fetch(`{{ url_for('views.follow_user', user_id=0) }}`.replace('0', userId), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.following !== undefined) {
+          if (data.following) {
+            this.textContent = 'Unfollow';
+            this.classList.remove('bg-gray-700', 'text-gray-300', 'hover:bg-blue-600', 'hover:text-white');
+            this.classList.add('bg-blue-600', 'text-white');
+          } else {
+            this.textContent = 'Follow';
+            this.classList.remove('bg-blue-600', 'text-white');
+            this.classList.add('bg-gray-700', 'text-gray-300', 'hover:bg-blue-600', 'hover:text-white');
+          }
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    });
+  });
+
+  // --- Notification Polling ---
+  function updateNotificationCount() {
+    fetch('{{ url_for('notifications.get_notification_count') }}')
+      .then(response => response.json())
+      .then(data => {
+        const countElement = document.getElementById('notification-count');
+        if (data.count > 0) {
+          countElement.textContent = data.count;
+          countElement.style.display = 'block';
+        } else {
+          countElement.style.display = 'none';
+        }
+      })
+      .catch(error => console.error('Error fetching notification count:', error));
+  }
+
+  // Poll for notifications every 30 seconds
+  setInterval(updateNotificationCount, 30000);
+  updateNotificationCount(); // Initial load
+
+  // --- Lazy Loading for images and videos ---
+  const posts = document.querySelectorAll('.post-card');
+  const lazyLoadPosts = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const postCard = entry.target;
+        const img = postCard.querySelector('img.lazyload');
+        const video = postCard.querySelector('video.lazyload');
+
+        if (img && img.dataset.src) {
+          img.src = img.dataset.src;
+          delete img.dataset.src;
+        }
+
+        if (video && video.dataset.src) {
+          const source = video.querySelector('source');
+          if (source) {
+            source.src = video.dataset.src;
+            video.load();
+          }
+          delete video.dataset.src;
+        }
+        
+        lazyLoadPosts.unobserve(entry.target);
+      }
+    });
+  }, {
+    root: null,
+    rootMargin: '200px',
+    threshold: 0.1
+  });
+  
+  posts.forEach(post => {
+    lazyLoadPosts.observe(post);
+  });
+  
+  const styleEl = document.createElement('style');
+  styleEl.textContent = `
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fadeIn {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    .new-story::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border: 2px solid #3B82F6;
+      border-radius: 0.75rem;
+      z-index: 10;
+    }
+    .play-button {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .video-container:hover .play-button {
+      opacity: 1;
+    }
+    .video-container video:hover + .play-button { /* Hide play button when video is hovered and controls are shown */
+        opacity: 0;
+    }
+  `;
+  document.head.appendChild(styleEl);
+
+  // Play button for videos
+  document.querySelectorAll('.video-container').forEach(container => {
+    const video = container.querySelector('video');
+    const playButton = container.querySelector('.play-button');
+
+    // Show play button only when video is paused or at start
+    video.addEventListener('play', () => {
+        playButton.style.display = 'none';
+    });
+    video.addEventListener('pause', () => {
+        playButton.style.display = 'flex';
+    });
+    video.addEventListener('ended', () => {
+        playButton.style.display = 'flex';
+    });
+
+    playButton.addEventListener('click', () => {
+        if (video.paused) {
+            video.play();
+            playButton.style.display = 'none';
+        } else {
+            video.pause();
+            playButton.style.display = 'flex';
+        }
+    });
+  });
+
+  // Handle post creation form submission with AJAX
+  document.getElementById('create-post-form').addEventListener('submit', function(e) {
+      e.preventDefault(); // Prevent default form submission
+
+      const form = e.target;
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+          method: 'POST',
+          body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              alert(data.message); // Or use a flash message system
+              // Optionally, dynamically add the new post to the feed without a full page reload
+              window.location.reload(); // For now, reload the page to see the new post
+          } else {
+              alert('Error: ' + data.message); // Display error message
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          alert('An unexpected error occurred.');
+      });
+  });
+
+  document.getElementById('modal-create-post-form').addEventListener('submit', function(e) {
+      e.preventDefault(); // Prevent default form submission
+
+      const form = e.target;
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+          method: 'POST',
+          body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              alert(data.message); // Or use a flash message system
+              closeCreatePostModal(); // Close the modal
+              window.location.reload(); // Reload to see the new post
+          } else {
+              alert('Error: ' + data.message); // Display error message
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          alert('An unexpected error occurred.');
+      });
+  });
+
+  // --- AJAX for comments ---
+  document.querySelectorAll('.comment-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const postId = this.dataset.postId;
+      const input = this.querySelector('input[name="comment_content"]');
+      const content = input.value.trim();
+      if (!content) return;
+      fetch(`{{ url_for('views.comment_post', post_id=0) }}`.replace('0', postId), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment_content: content })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.comment_html) {
+          // Insert new comment at the top of the comments-section
+          const section = form.closest('.comments-section');
+          section.insertAdjacentHTML('afterbegin', data.comment_html);
+          input.value = '';
+        } else {
+          alert(data.message || 'Failed to add comment.');
+        }
+      })
+      .catch(() => alert('Error adding comment.'));
+    });
+  });
+  // --- AJAX for delete post ---
+  document.querySelectorAll('.delete-post-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (!confirm('Are you sure you want to delete this post?')) return;
+      const postId = this.dataset.postId;
+      fetch(`{{ url_for('views.delete_post', post_id=0) }}`.replace('0', postId), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(res => res.json())
+      .then((data) => {
+        if (data.success) {
+          // Remove post card from DOM
+          const postCard = form.closest('.post-card');
+          postCard.remove();
+        } else {
+          alert(data.message || 'Failed to delete post.');
+        }
+      })
+      .catch(() => alert('Error deleting post.'));
+    });
+  });
+
+  // Banking section toggle with improved token handling
+  function toggleBankingSection() {
+    const bankingSection = document.getElementById('banking-section');
+    const feedSection = document.getElementById('feed-section');
+    const bankingIframe = document.getElementById('banking-iframe');
+    
+    if (bankingSection.classList.contains('hidden')) {
+      // Get latest token before showing banking section
+      const token = localStorage.getItem('django_api_token') || sessionStorage.getItem('django_api_token');
+      if (token) {
+        const baseUrl = 'https://gax-2.onrender.com';
+        bankingIframe.src = `${baseUrl}?token=${encodeURIComponent(token)}`;
+      } else {
+        // Redirect to bank login if no token
+        window.location.href = 'https://gax-2.onrender.com/accounts/login/';
+        return;
+      }
+      
+      bankingSection.classList.remove('hidden');
+      feedSection.classList.add('hidden');
+    } else {
+      bankingSection.classList.add('hidden');
+      feedSection.classList.remove('hidden');
+    }
+  }
+
+  // Initialize banking integration
+  document.addEventListener('DOMContentLoaded', function() {
+    const bankingIframe = document.getElementById('banking-iframe');
+    
+    // Listen for messages from banking iframe
+    window.addEventListener('message', function(event) {
+      if (event.origin === 'https://gax-2.onrender.com') {
+        if (event.data.type === 'token') {
+          localStorage.setItem('django_api_token', event.data.token);
+        } else if (event.data.type === 'error') {
+          console.error('Banking error:', event.data.message);
+          alert('Banking error: ' + event.data.message);
+        }
+      }
+    });
+
+    // Handle iframe load errors
+    bankingIframe.onerror = function() {
+      console.error('Failed to load banking iframe');
+      alert('Failed to connect to banking service. Please try again later.');
+    };
+  });
+</script>
+{% endblock %}

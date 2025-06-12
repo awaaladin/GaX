@@ -46,6 +46,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',  # Manages X-Frame-Options header
+    'banking.middleware.TokenAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'banking.urls'
@@ -140,6 +141,36 @@ CORS_ALLOW_ALL_ORIGINS = True
 #     # your Flask app domain(s)
 # ]
 
-# Allow embedding pages in iframes only from the same origin
-X_FRAME_OPTIONS = 'SAMEORIGIN'  # IMPORTANT: This instructs browsers to allow iframe embedding only from the same origin
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    "https://choropiaz-2.onrender.com",
+    "http://localhost:5000",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS'
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# Frame settings
+X_FRAME_OPTIONS = 'ALLOW-FROM https://choropiaz-2.onrender.com'
+CSRF_TRUSTED_ORIGINS = ['https://choropiaz-2.onrender.com']
 

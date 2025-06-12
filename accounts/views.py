@@ -33,6 +33,8 @@ from .serializers import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+import jwt
+from datetime import datetime, timedelta
 
 # Registration and Login
 class RegisterView(generics.CreateAPIView):
@@ -714,3 +716,36 @@ def stripe_webhook(request):
             logger.error(f"❌ Error processing payment: {str(e)}")
 
     return HttpResponse(status=200)
+
+def login_view(request):
+    if request.method == 'POST':
+        serializer = UserLoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        login(request, user)
+        # Generate JWT token
+        token = jwt.encode({
+            'user_id': user.id,
+            'exp': datetime.utcnow() + timedelta(days=1)
+        }, settings.SECRET_KEY, algorithm='HS256')
+        
+        response = JsonResponse({'success': True})
+        response.set_cookie(
+            'django_api_token', 
+            token, 
+            max_age=86400,
+            secure=True,
+            samesite='None'
+        )
+        
+        # Send token via postMessage
+        response.content = f"""
+            <script>
+                window.parent.postMessage({{
+                    type: 'token',
+                    token: '{token}'
+                }}, 'https://choropiaz-2.onrender.com');
+            </script>
+        """
+        return response
+    return render(request, 'accounts/login.html')
