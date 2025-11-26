@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAX Banking API</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .status {
+            background: #10b981;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        .endpoints {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .endpoint {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .method {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.85em;
+        }
+        .post { background: #10b981; color: white; }
+        .get { background: #3b82f6; color: white; }
+        .url {
+            font-family: 'Courier New', monospace;
+            color: #333;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .feature {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏦 GAX Banking API</h1>
+        <p class="subtitle">Production-Grade Digital Banking & Payment Gateway</p>
+        <div class="status">✓ Server Running</div>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">💳</div>
+                <strong>Digital Wallets</strong>
+                <p>Secure wallet management</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">💸</div>
+                <strong>Transfers</strong>
+                <p>Instant money transfers</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📱</div>
+                <strong>Bill Payments</strong>
+                <p>Airtime, Data, TV, Electricity</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <strong>Secure</strong>
+                <p>JWT Auth & Encryption</p>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 30px; color: #333;">🚀 Quick Start</h2>
+        <div class="endpoints">
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="url">/api/auth/register/</span>
+                <p style="margin-top: 5px; color: #666; font-size: 0.9em;">Create a new user account</p>
+            </div>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="url">/api/auth/login/</span>
+                <p style="margin-top: 5px; color: #666; font-size: 0.9em;">Login and get JWT tokens</p>
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="url">/api/wallets/</span>
+                <p style="margin-top: 5px; color: #666; font-size: 0.9em;">View your wallet</p>
+            </div>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="url">/api/wallet/deposit/</span>
+                <p style="margin-top: 5px; color: #666; font-size: 0.9em;">Deposit money to wallet</p>
+            </div>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="url">/api/wallet/transfer/</span>
+                <p style="margin-top: 5px; color: #666; font-size: 0.9em;">Transfer money to another user</p>
+            </div>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="url">/api/bills/airtime/</span>
+                <p style="margin-top: 5px; color: #666; font-size: 0.9em;">Buy airtime</p>
+            </div>
+        </div>
+
+        <p style="margin-top: 20px; text-align: center; color: #666;">
+            📖 View complete API documentation in <a href="/admin/">Admin Panel</a> or check <strong>API_REFERENCE.md</strong>
+        </p>
+    </div>
+</body>
+</html>

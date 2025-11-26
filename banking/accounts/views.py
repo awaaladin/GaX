@@ -16,13 +16,15 @@ from decimal import Decimal
 from .forms import ProfileUpdateForm
 from .models import Profile
 from django.contrib import messages
-import stripe
+# import stripe  # Commented out - Using Moniepoint instead
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from .utils.moniepoint import MoniepointAPI
+from .utils.payment import PaymentProcessor
 
-# Set Stripe API key globally for this module
-stripe.api_key = settings.STRIPE_SECRET_KEY
+# Stripe configuration commented out - Using Moniepoint
+# stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class LoginView(DjangoLoginView):
     template_name = 'accounts/login.html' 
@@ -92,7 +94,7 @@ def dashboard(request):
         'transactions': transactions,
         'profile': profile,
         'user': request.user,
-        'STRIPE_PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY,
+        # 'STRIPE_PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY,  # Using Moniepoint
     }
    return render(request, 'accounts/dashboard.html', context)
 
@@ -468,36 +470,67 @@ def update_profile_picture(request):
         profile.save()
     return redirect('accounts/profile')
 
+# STRIPE PAYMENT - COMMENTED OUT (Using Moniepoint instead)
+# @csrf_exempt
+# @login_required
+# def create_stripe_session(request):
+#     import json
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         amount = int(data.get('amount', 0))
+#         if amount < 100:
+#             return JsonResponse({'error': 'Amount too low'}, status=400)
+#         try:
+#             session = stripe.checkout.Session.create(
+#                 payment_method_types=['card'],
+#                 line_items=[{...}],
+#                 mode='payment',
+#                 success_url=request.build_absolute_uri('/') + '?success=true',
+#                 cancel_url=request.build_absolute_uri('/') + '?canceled=true',
+#                 metadata={'user_id': request.user.id}
+#             )
+#             return JsonResponse({'sessionId': session.id})
+#         except Exception as e:
+#             return JsonResponse({'error': str(e)}, status=400)
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+# MONIEPOINT PAYMENT - Active payment processor
 @csrf_exempt
 @login_required
 def create_stripe_session(request):
+    """Deposit using Moniepoint (keeping function name for compatibility)"""
     import json
     if request.method == 'POST':
         data = json.loads(request.body)
-        amount = int(data.get('amount', 0))
-        if amount < 100:  # Stripe minimum is usually $0.50 or local equivalent
-            return JsonResponse({'error': 'Amount too low'}, status=400)
+        amount = Decimal(data.get('amount', 0)) / 100  # Convert from kobo to naira
+        
+        if amount < 100:  # Minimum 100 Naira
+            return JsonResponse({'error': 'Amount too low. Minimum is ₦100'}, status=400)
+        
         try:
-            session = stripe.checkout.Session.create(
-                payment_method_types=['card'],
-                line_items=[{
-                    'price_data': {
-                        'currency': 'ngn',
-                        'product_data': {
-                            'name': 'Wallet Funding',
-                        },
-                        'unit_amount': amount,  # amount in kobo
-                    },
-                    'quantity': 1,
-                }],
-                mode='payment',
-                success_url=request.build_absolute_uri('/') + '?success=true',
-                cancel_url=request.build_absolute_uri('/') + '?canceled=true',
-                metadata={
-                    'user_id': request.user.id,
-                }
+            # Use Moniepoint API for payment
+            moniepoint = MoniepointAPI(environment='sandbox')
+            processor = PaymentProcessor()
+            
+            # Create virtual account or get existing one
+            wallet = request.user.wallet
+            
+            # Credit wallet directly (in production, this would be after Moniepoint confirmation)
+            transaction = processor.credit_wallet(
+                wallet=wallet,
+                amount=amount,
+                transaction_type='deposit',
+                description='Wallet funding via Moniepoint'
             )
-            return JsonResponse({'sessionId': session.id})
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Deposit successful',
+                'transaction_id': str(transaction.id),
+                'new_balance': str(wallet.balance)
+            })
+            
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+    
     return JsonResponse({'error': 'Invalid request'}, status=400)

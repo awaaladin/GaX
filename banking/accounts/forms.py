@@ -81,11 +81,11 @@ class KYCUploadForm(forms.ModelForm):
         fields = ['id_document']
 
 
-
-class CardFreezeForm(forms.ModelForm):
-    class Meta:
-        model = BankAccount
-        fields = ['is_frozen']
+# Commented out - is_frozen field doesn't exist in BankAccount model
+# class CardFreezeForm(forms.ModelForm):
+#     class Meta:
+#         model = BankAccount
+#         fields = ['is_frozen']
 
 
 

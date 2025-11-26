@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAX Payment Gateway - Secure Checkout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .payment-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .payment-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .payment-header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .payment-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .payment-body {
+            padding: 30px;
+        }
+
+        .merchant-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .merchant-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .amount-display {
+            font-size: 36px;
+            font-weight: 700;
+            color: #667eea;
+            margin: 15px 0;
+        }
+
+        .payment-details {
+            margin-bottom: 25px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .payment-methods {
+            margin-bottom: 25px;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-method:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .payment-method input[type="radio"] {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .payment-method label {
+            flex: 1;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .pay-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .pay-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .pay-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            color: #6c757d;
+            font-size: 12px;
+        }
+
+        .security-badge svg {
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .payment-container {
+                border-radius: 0;
+            }
+            
+            .amount-display {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="payment-header">
+            <h1>GAX Payment Gateway</h1>
+            <p>Secure Payment Checkout</p>
+        </div>
+
+        <div class="payment-body">
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+
+            <div class="merchant-info">
+                <div class="merchant-name" id="merchantName">Loading...</div>
+                <div class="amount-display" id="amountDisplay">₦0.00</div>
+            </div>
+
+            <div class="payment-details">
+                <div class="detail-row">
+                    <span class="detail-label">Reference</span>
+                    <span class="detail-value" id="reference">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email</span>
+                    <span class="detail-value" id="customerEmail">-</span>
+                </div>
+            </div>
+
+            <form id="paymentForm">
+                <div class="form-group">
+                    <label for="accountNumber">Account Number</label>
+                    <input 
+                        type="text" 
+                        id="accountNumber" 
+                        placeholder="Enter your wallet account number"
+                        pattern="[0-9]{10}"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="transactionPin">Transaction PIN</label>
+                    <input 
+                        type="password" 
+                        id="transactionPin" 
+                        placeholder="Enter 4-digit PIN"
+                        pattern="[0-9]{4}"
+                        maxlength="4"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="pay-button" id="payButton">
+                    Pay Now
+                </button>
+            </form>
+
+            <div class="security-badge">
+                <svg fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 1L3 5v6c0 5.25 3.3 8.25 7 9 3.7-.75 7-3.75 7-9V5l-7-4z"/>
+                </svg>
+                Secured by GAX Payment Gateway
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get payment reference from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentReference = urlParams.get('ref') || window.location.pathname.split('/').pop();
+
+        // DOM elements
+        const form = document.getElementById('paymentForm');
+        const payButton = document.getElementById('payButton');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+
+        // Load payment details
+        async function loadPaymentDetails() {
+            try {
+                const response = await fetch(`/api/payments/status/${paymentReference}/`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('amountDisplay').textContent = `₦${parseFloat(data.amount).toLocaleString('en-NG', {minimumFractionDigits: 2})}`;
+                    document.getElementById('reference').textContent = data.reference;
+                    document.getElementById('customerEmail').textContent = data.customer_email || '-';
+                    document.getElementById('merchantName').textContent = data.merchant_name || 'Merchant';
+
+                    if (data.status === 'successful') {
+                        showSuccess('This payment has already been completed.');
+                        form.style.display = 'none';
+                    }
+                } else {
+                    showError('Payment not found or invalid reference');
+                }
+            } catch (error) {
+                showError('Failed to load payment details');
+            }
+        }
+
+        // Handle form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const accountNumber = document.getElementById('accountNumber').value;
+            const transactionPin = document.getElementById('transactionPin').value;
+
+            if (!accountNumber || !transactionPin) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            payButton.disabled = true;
+            payButton.textContent = 'Processing...';
+
+            try {
+                const response = await fetch('/api/wallet/transfer/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        amount: parseFloat(document.getElementById('amountDisplay').textContent.replace('₦', '').replace(',', '')),
+                        recipient_account: paymentReference, // Merchant virtual account
+                        transaction_pin: transactionPin,
+                        narration: `Payment: ${paymentReference}`
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showSuccess('Payment successful! Redirecting...');
+                    setTimeout(() => {
+                        window.location.href = data.callback_url || '/payment-success';
+                    }, 2000);
+                } else {
+                    showError(data.message || 'Payment failed. Please try again.');
+                }
+            } catch (error) {
+                showError('An error occurred. Please try again.');
+            } finally {
+                payButton.disabled = false;
+                payButton.textContent = 'Pay Now';
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+
+        // Load payment details on page load
+        loadPaymentDetails();
+    </script>
+</body>
+</html>
