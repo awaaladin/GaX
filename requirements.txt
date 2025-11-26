@@ -1,0 +1,55 @@
+# Production-grade Django Banking + Payment Gateway Requirements
+
+# Django & DRF
+Django==5.0.1
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.1
+django-filter==23.5
+django-cors-headers==4.3.1
+
+# Database
+psycopg2-binary==2.9.9
+dj-database-url==2.1.0
+
+# Redis & Caching
+redis==5.0.1
+django-redis==5.4.0
+celery==5.3.6
+
+# Security
+cryptography==42.0.1
+PyJWT==2.8.0
+
+# Payment APIs
+requests==2.31.0
+
+# File uploads & Storage
+Pillow==10.2.0
+django-storages==1.14.2
+boto3==1.34.34
+
+# Environment
+python-dotenv==1.0.1
+
+# Validation
+phonenumbers==8.13.29
+
+# Utilities
+python-dateutil==2.8.2
+
+# ASGI Server (for production)
+gunicorn==21.2.0
+uvicorn[standard]==0.27.0
+daphne==4.0.0
+
+# Monitoring
+sentry-sdk==1.40.0
+
+# Testing
+pytest==8.0.0
+pytest-django==4.7.0
+factory-boy==3.3.0
+
+# Code Quality
+flake8==7.0.0
+black==24.1.1

@@ -1,0 +1,36 @@
+{
+  "name": "gax-banking-api",
+  "version": "1.0.0",
+  "description": "Production-grade Digital Banking and Payment Gateway Platform for Nigeria",
+  "main": "manage.py",
+  "scripts": {
+    "dev": "python manage.py runserver",
+    "migrate": "python manage.py migrate",
+    "makemigrations": "python manage.py makemigrations",
+    "createsuperuser": "python manage.py createsuperuser",
+    "test": "python manage.py test",
+    "shell": "python manage.py shell",
+    "reconcile": "python manage.py reconcile_transactions",
+    "settlements": "python manage.py process_settlements",
+    "collectstatic": "python manage.py collectstatic --noinput"
+  },
+  "keywords": [
+    "django",
+    "banking",
+    "payment-gateway",
+    "fintech",
+    "nigeria",
+    "moniepoint",
+    "bill-payments"
+  ],
+  "author": "GAX Banking",
+  "license": "Proprietary",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/awaaladin/gax.git"
+  },
+  "bugs": {
+    "url": "https://github.com/awaaladin/gax/issues"
+  },
+  "homepage": "https://github.com/awaaladin/gax#readme"
+}
