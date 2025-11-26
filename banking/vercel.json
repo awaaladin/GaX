@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "name": "gax-transaction-system",
+  "builds": [
+    {
+      "src": "banking/wsgi.py",
+      "use": "@vercel/python",
+      "config": { "maxLambdaSize": "15mb" }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/banking/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "banking/wsgi.py"
+    }
+  ],
+  "env": {
+    "DJANGO_SETTINGS_MODULE": "banking.settings",
+    "PYTHONPATH": "/var/task/banking"
+  }
+}
