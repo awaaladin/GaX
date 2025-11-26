@@ -1,0 +1,505 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    :root {
+        --primary-color: #00954d; /* Access Bank green */
+        --secondary-color: #0033aa; /* Access Bank blue */
+        --accent-color: #ff7200; /* Access Bank orange */
+        --light-bg: #f9fafb;
+        --card-bg: #ffffff;
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+        --border-color: #e5e7eb;
+    }
+
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Segoe UI', sans-serif;
+        color: var(--text-dark);
+    }
+    
+    .navbar-custom {
+        background-color: var(--primary-color);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .navbar-brand {
+        font-weight: 700;
+        color: white !important;
+    }
+    
+    .deposit-container {
+        padding: 20px;
+    }
+    
+    .deposit-card {
+        background-color: var(--card-bg);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+    
+    .deposit-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+    
+    .back-button {
+        background-color: rgba(0, 149, 77, 0.1);
+        color: var(--primary-color);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+        transition: all 0.2s ease;
+    }
+    
+    .back-button:hover {
+        background-color: rgba(0, 149, 77, 0.2);
+    }
+    
+    .page-title {
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+    }
+    
+    .form-control {
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background-color: var(--light-bg);
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(0, 149, 77, 0.1);
+    }
+    
+    .form-select {
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background-color: var(--light-bg);
+    }
+    
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(0, 149, 77, 0.1);
+    }
+    
+    .input-group-text {
+        background-color: var(--light-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px 0 0 12px;
+        font-weight: 600;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border: none;
+        border-radius: 12px;
+        padding: 14px 28px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-primary:hover, .btn-primary:focus {
+        background-color: #007f3e;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .payment-methods {
+        margin-top: 24px;
+    }
+    
+    .payment-method-title {
+        font-weight: 600;
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .payment-method-option {
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+    }
+    
+    .payment-method-option.selected {
+        border-color: var(--primary-color);
+        background-color: rgba(0, 149, 77, 0.05);
+    }
+    
+    .payment-method-option:hover {
+        border-color: var(--primary-color);
+    }
+    
+    .payment-method-icon {
+        width: 48px;
+        height: 48px;
+        background-color: rgba(0, 149, 77, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+    }
+    
+    .payment-method-icon i {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+    }
+    
+    .payment-method-details {
+        flex: 1;
+    }
+    
+    .payment-method-name {
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .payment-method-description {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin: 4px 0 0 0;
+    }
+
+    .amount-shortcuts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 12px;
+    }
+    
+    .amount-shortcut {
+        background-color: var(--light-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 8px 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .amount-shortcut:hover {
+        border-color: var(--primary-color);
+        background-color: rgba(0, 149, 77, 0.05);
+    }
+    
+    .summary-section {
+        background-color: var(--light-bg);
+        border-radius: 12px;
+        padding: 16px;
+        margin-top: 24px;
+    }
+    
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+    
+    .summary-label {
+        color: var(--text-muted);
+    }
+    
+    .summary-value {
+        font-weight: 600;
+    }
+    
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        border-top: 1px solid var(--border-color);
+        margin-top: 8px;
+        padding-top: 8px;
+    }
+    
+    .summary-total-label {
+        font-weight: 600;
+    }
+    
+    .summary-total-value {
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+    
+    @media (max-width: 767px) {
+        .deposit-container {
+            padding: 16px;
+        }
+        
+        .deposit-card {
+            padding: 20px;
+        }
+    }
+</style>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+    <div class="container">
+        <a class="navbar-brand" href="#">AccessBank</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">Help</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container deposit-container">
+    <div class="deposit-card">
+        <div class="deposit-header">
+            <a href="{% url 'dashboard' %}" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h4 class="page-title">Add Money</h4>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Amount Input -->
+            <div class="mb-4">
+                <label for="amount" class="form-label">Enter Amount</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">₦</span>
+                    <input type="number" class="form-control" id="amount" name="amount" placeholder="0.00" required min="100">
+                </div>
+                
+                <div class="amount-shortcuts">
+                    <div class="amount-shortcut" data-amount="1000">₦1,000</div>
+                    <div class="amount-shortcut" data-amount="5000">₦5,000</div>
+                    <div class="amount-shortcut" data-amount="10000">₦10,000</div>
+                    <div class="amount-shortcut" data-amount="20000">₦20,000</div>
+                </div>
+            </div>
+            
+            <!-- Payment Methods -->
+            <div class="payment-methods">
+                <h5 class="payment-method-title">Select Payment Method</h5>
+                
+                <div class="payment-method-option selected">
+                    <div class="payment-method-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="payment-method-details">
+                        <h6 class="payment-method-name">Card Payment</h6>
+                        <p class="payment-method-description">Pay with debit or credit card</p>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment_method" id="card" value="card" checked>
+                    </div>
+                </div>
+                
+                <div class="payment-method-option">
+                    <div class="payment-method-icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <div class="payment-method-details">
+                        <h6 class="payment-method-name">Bank Transfer</h6>
+                        <p class="payment-method-description">Transfer from another bank account</p>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment_method" id="bank_transfer" value="bank_transfer">
+                    </div>
+                </div>
+                
+                <div class="payment-method-option">
+                    <div class="payment-method-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="payment-method-details">
+                        <h6 class="payment-method-name">USSD</h6>
+                        <p class="payment-method-description">Pay using USSD code</p>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment_method" id="ussd" value="ussd">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Summary Section -->
+            <div class="summary-section">
+                <div class="summary-item">
+                    <span class="summary-label">Amount</span>
+                    <span class="summary-value">₦<span id="summary-amount">0.00</span></span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Fee</span>
+                    <span class="summary-value">₦<span id="summary-fee">0.00</span></span>
+                </div>
+                <div class="summary-total"><div class="summary-total">
+                    <span class="summary-total-label">Total Amount</span>
+                    <span class="summary-total-value">₦<span id="summary-total">0.00</span></span>
+                </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary mt-4 w-100">Continue to Payment</button>
+        </form>
+    </div>
+    
+    <!-- Recent Transactions Card -->
+    <div class="deposit-card mt-4">
+        <h5 class="mb-3">Recent Transactions</h5>
+        <div class="table-responsive">
+            <table class="table table-borderless">
+                <thead>
+                    <tr>
+                        <th class="text-muted">Date</th>
+                        <th class="text-muted">Description</th>
+                        <th class="text-muted text-end">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in recent_transactions|default:'' %}
+                        <tr>
+                            <td>{{ transaction.date|date:"d M, Y" }}</td>
+                            <td>{{ transaction.description }}</td>
+                            <td class="text-end {% if transaction.amount < 0 %}text-danger{% else %}text-success{% endif %}">
+                                {% if transaction.amount < 0 %}-{% endif %}₦{{ transaction.amount|floatformat:2 }}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">No recent transactions</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <a href="{% url 'transaction_history' %}" class="btn btn-outline-primary btn-sm w-100">View All Transactions</a>
+    </div>
+    
+    <!-- Helpful Tips Card -->
+    <div class="deposit-card mt-4">
+        <h5 class="mb-3">Helpful Tips</h5>
+        <div class="accordion" id="accordionTips">
+            <div class="accordion-item border-0 mb-2">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed bg-light rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        <i class="fas fa-info-circle me-2 text-primary"></i> Is there a limit to how much I can deposit?
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionTips">
+                    <div class="accordion-body">
+                        Daily deposit limits depend on your account tier. Regular accounts can deposit up to ₦5,000,000 daily while Premium accounts have higher limits.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item border-0 mb-2">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed bg-light rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <i class="fas fa-info-circle me-2 text-primary"></i> How long do deposits take to reflect?
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionTips">
+                    <div class="accordion-body">
+                        Card payments and bank transfers typically reflect instantly. USSD payments may take up to 15 minutes depending on your network provider.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item border-0">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed bg-light rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <i class="fas fa-info-circle me-2 text-primary"></i> Are there any fees for deposits?
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionTips">
+                    <div class="accordion-body">
+                        Card deposits incur a 1.5% processing fee. Bank transfers and USSD deposits are free of charge.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const amountInput = document.getElementById('amount');
+        const summaryAmount = document.getElementById('summary-amount');
+        const summaryFee = document.getElementById('summary-fee');
+        const summaryTotal = document.getElementById('summary-total');
+        const amountShortcuts = document.querySelectorAll('.amount-shortcut');
+        const paymentMethods = document.querySelectorAll('.payment-method-option');
+        
+        // Initialize
+        updateSummary();
+        
+        // Event listeners
+        amountInput.addEventListener('input', updateSummary);
+        
+        // Amount shortcuts
+        amountShortcuts.forEach(shortcut => {
+            shortcut.addEventListener('click', function() {
+                amountInput.value = this.dataset.amount;
+                updateSummary();
+            });
+        });
+        
+        // Payment method selection
+        paymentMethods.forEach(method => {
+            method.addEventListener('click', function() {
+                // Remove selected class from all methods
+                paymentMethods.forEach(m => m.classList.remove('selected'));
+                // Add selected class to clicked method
+                this.classList.add('selected');
+                // Select the radio
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+                // Update summary
+                updateSummary();
+            });
+        });
+        
+        // Calculate and update summary
+        function updateSummary() {
+            const amount = parseFloat(amountInput.value) || 0;
+            let fee = 0;
+            
+            // Calculate fee based on payment method
+            const selectedMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            if (selectedMethod === 'card' && amount > 0) {
+                fee = amount * 0.015; // 1.5% for card payments
+            }
+            
+            const total = amount + fee;
+            
+            // Update summary
+            summaryAmount.textContent = amount.toLocaleString('en-NG', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            summaryFee.textContent = fee.toLocaleString('en-NG', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            summaryTotal.textContent = total.toLocaleString('en-NG', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+    });
+</script>
+{% endblock %}

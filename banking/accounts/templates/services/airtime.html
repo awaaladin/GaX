@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% comment %} Add service-page class to body via script for this page {% endcomment %}
+<script>document.body.classList.add('service-page');</script>
+<div style="background: #fff; min-height: 100vh; padding-top: 40px;">
+  <div class="container mt-4" style="background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); padding: 32px 20px;">
+      <a href="{% url 'dashboard' %}" class="btn btn-link" style="position: absolute; top: 10px; left: 10px;">
+          <i class="fas fa-arrow-left"></i> Dashboard
+      </a>
+      <h4 style="color: #222;">Buy Airtime</h4>
+      <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+              <label for="network" class="form-label">Network</label>
+              <select class="form-control" name="network" required>
+                  <option value="">-- Select Network --</option>
+                  <option value="mtn">MTN</option>
+                  <option value="airtel">Airtel</option>
+                  <option value="glo">Glo</option>
+                  <option value="9mobile">9mobile</option>
+              </select>
+          </div>
+          <div class="mb-3">
+              <label for="phone" class="form-label">Phone Number</label>
+              <input type="text" name="phone" class="form-control" required>
+          </div>
+          <div class="mb-3">
+              <label for="amount" class="form-label">Amount</label>
+              <input type="number" name="amount" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Buy Airtime</button>
+      </form>
+  </div>
+</div>
+{% endblock %}

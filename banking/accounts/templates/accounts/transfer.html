@@ -1,0 +1,665 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    :root {
+        --primary-color: #00954d; /* Access Bank green */
+        --secondary-color: #0033aa; /* Access Bank blue */
+        --accent-color: #ff7200; /* Access Bank orange */
+        --light-bg: #f9fafb;
+        --card-bg: #ffffff;
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+        --border-color: #e5e7eb;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --error-color: #ef4444;
+    }
+
+    body {
+        background-color: var(--light-bg);
+        font-family: 'Segoe UI', sans-serif;
+        color: var(--text-dark);
+    }
+    
+    .navbar-custom {
+        background-color: var(--primary-color);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .navbar-brand {
+        font-weight: 700;
+        color: white !important;
+    }
+    
+    .transfer-container {
+        padding: 20px;
+    }
+    
+    .transfer-card {
+        background-color: var(--card-bg);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+    
+    .transfer-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+    
+    .back-button {
+        background-color: rgba(0, 149, 77, 0.1);
+        color: var(--primary-color);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+        transition: all 0.2s ease;
+    }
+    
+    .back-button:hover {
+        background-color: rgba(0, 149, 77, 0.2);
+    }
+    
+    .page-title {
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+    }
+    
+    .form-control {
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background-color: var(--light-bg);
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(0, 149, 77, 0.1);
+    }
+    
+    .form-select {
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background-color: var(--light-bg);
+    }
+    
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(0, 149, 77, 0.1);
+    }
+    
+    .input-group-text {
+        background-color: var(--light-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px 0 0 12px;
+        font-weight: 600;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border: none;
+        border-radius: 12px;
+        padding: 14px 28px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-primary:hover, .btn-primary:focus {
+        background-color: #007f3e;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .transfer-type-options {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+    
+    .transfer-type-option {
+        background-color: var(--light-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    .transfer-type-option.selected {
+        border-color: var(--primary-color);
+        background-color: rgba(0, 149, 77, 0.05);
+    }
+    
+    .transfer-type-option:hover {
+        border-color: var(--primary-color);
+    }
+    
+    .transfer-type-icon {
+        width: 48px;
+        height: 48px;
+        background-color: rgba(0, 149, 77, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 12px;
+    }
+    
+    .transfer-type-icon i {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+    }
+    
+    .transfer-type-name {
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .recipient-card {
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .recipient-card:hover {
+        border-color: var(--primary-color);
+        background-color: rgba(0, 149, 77, 0.05);
+    }
+    
+    .recipient-icon {
+        width: 48px;
+        height: 48px;
+        background-color: rgba(0, 149, 77, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+    }
+    
+    .recipient-icon i {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+    }
+    
+    .recipient-details h6 {
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .recipient-details p {
+        color: var(--text-muted);
+        margin: 4px 0 0 0;
+        font-size: 0.85rem;
+    }
+    
+    .summary-section {
+        background-color: var(--light-bg);
+        border-radius: 12px;
+        padding: 16px;
+        margin-top: 24px;
+    }
+    
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+    
+    .summary-label {
+        color: var(--text-muted);
+    }
+    
+    .summary-value {
+        font-weight: 600;
+    }
+    
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        border-top: 1px solid var(--border-color);
+        margin-top: 8px;
+        padding-top: 8px;
+    }
+    
+    .summary-total-label {
+        font-weight: 600;
+    }
+    
+    .summary-total-value {
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+    
+    .recent-recipients {
+        margin-top: 24px;
+    }
+    
+    .section-title {
+        font-weight: 600;
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .recent-recipient-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 16px;
+    }
+    
+    .recent-recipient {
+        text-align: center;
+        cursor: pointer;
+    }
+    
+    .recent-recipient-avatar {
+        width: 64px;
+        height: 64px;
+        background-color: rgba(0, 149, 77, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 8px;
+    }
+    
+    .recent-recipient-avatar i {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+    }
+    
+    .recent-recipient-name {
+        font-weight: 600;
+        font-size: 0.85rem;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    @media (max-width: 767px) {
+        .transfer-container {
+            padding: 16px;
+        }
+        
+        .transfer-card {
+            padding: 20px;
+        }
+        
+        .transfer-type-options {
+            gap: 10px;
+        }
+        
+        .recent-recipient-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+</style>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <img src="https://www.accessbankplc.com/App_Themes/accessbank/images/logo.svg" alt="AccessBank Logo">
+            AccessBank
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#"><i class="fas fa-bell"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#"><i class="fas fa-question-circle"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#"><i class="fas fa-user-circle"></i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container transfer-container">
+    <!-- Step Indicator -->
+    <div class="step-indicator">
+        <div class="step active">
+            1
+            <span class="step-label">Details</span>
+        </div>
+        <div class="step">
+            2
+            <span class="step-label">Confirm</span>
+        </div>
+        <div class="step">
+            3
+            <span class="step-label">Receipt</span>
+        </div>
+    </div>
+
+    <div class="transfer-card">
+        <div class="transfer-header">
+            <a href="{% url 'dashboard' %}" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h4 class="page-title">Send Money</h4>
+        </div>
+        
+        <!-- Transfer Type Selection -->
+        <div class="transfer-type-options">
+            <div class="transfer-type-option selected" data-type="access">
+                <div class="transfer-type-icon">
+                    <i class="fas fa-university"></i>
+                </div>
+                <h6 class="transfer-type-name">Within Access</h6>
+            </div>
+            <div class="transfer-type-option" data-type="other-bank">
+                <div class="transfer-type-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <h6 class="transfer-type-name">Other Banks</h6>
+            </div>
+            <div class="transfer-type-option" data-type="international">
+                <div class="transfer-type-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h6 class="transfer-type-name">International</h6>
+            </div>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="transfer_type" id="transfer_type" value="access">
+            
+            <!-- Source Account Selection -->
+            <div class="mb-4">
+                <label for="from_account" class="form-label">From</label>
+                <select class="form-select" id="from_account" name="from_account" required>
+                    <option value="">Select Account</option>
+                    {% for account in user_accounts %}
+                    <option value="{{ account.id }}">{{ account.account_number }} - {{ account.account_type }} (₦{{ account.balance|floatformat:2 }})</option>
+                    {% empty %}
+                    <option value="" disabled>No accounts available</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <!-- Beneficiary Selection or Input -->
+            <div class="mb-4">
+                <label for="beneficiary_search" class="form-label">To</label>
+                <input type="text" class="form-control" id="beneficiary_search" placeholder="Search or enter account number" autocomplete="off">
+                <input type="hidden" id="to_account" name="to_account">
+                
+                <div class="beneficiary-results mt-2" style="display: none;">
+                    <!-- Results will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Bank Selection (for Other Banks) -->
+            <div class="mb-4 other-bank-fields" style="display: none;">
+                <label for="bank" class="form-label">Bank</label>
+                <select class="form-select" id="bank" name="bank">
+                    <option value="">Select Bank</option>
+                    <option value="first-bank">First Bank</option>
+                    <option value="gtbank">GTBank</option>
+                    <option value="zenith-bank">Zenith Bank</option>
+                    <option value="uba">UBA</option>
+                    <option value="eco-bank">Eco Bank</option>
+                    <option value="fidelity-bank">Fidelity Bank</option>
+                    <option value="fcmb">FCMB</option>
+                </select>
+            </div>
+            
+            <!-- Amount Input -->
+            <div class="mb-4">
+                <label for="amount" class="form-label">Enter Amount</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">₦</span>
+                    <input type="number" class="form-control" id="amount" name="amount" placeholder="0.00" required min="100">
+                </div>
+            </div>
+            
+            <!-- Narration Input -->
+            <div class="mb-4">
+                <label for="narration" class="form-label">Narration (Optional)</label>
+                <textarea class="form-control" id="narration" name="narration" rows="2" placeholder="What's this for?"></textarea>
+            </div>
+            
+            <!-- Save Beneficiary Checkbox -->
+            <div class="mb-4 form-check">
+                <input type="checkbox" class="form-check-input" id="save_beneficiary" name="save_beneficiary">
+                <label class="form-check-label" for="save_beneficiary">Save as beneficiary</label>
+            </div>
+            
+            <!-- Summary Section -->
+            <div class="summary-section">
+                <div class="summary-item">
+                    <span class="summary-label">Amount</span>
+                    <span class="summary-value">₦<span id="summary-amount">0.00</span></span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Fee</span>
+                    <span class="summary-value">₦<span id="summary-fee">0.00</span></span>
+                </div>
+                <div class="summary-total">
+                    <span class="summary-total-label">Total Amount</span>
+                    <span class="summary-total-value">₦<span id="summary-total">0.00</span></span>
+                </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary mt-4 w-100">Continue</button>
+        </form>
+    </div>
+    
+    <!-- Recent Recipients Section -->
+    <div class="transfer-card recent-recipients">
+        <h5 class="section-title">Recent Recipients</h5>
+        
+        <div class="recent-recipient-grid">
+            {% for recipient in recent_recipients|default:'' %}
+            <div class="recent-recipient" data-account="{{ recipient.account_number }}" data-name="{{ recipient.name }}" data-bank="{{ recipient.bank }}">
+                <div class="recent-recipient-avatar">
+                    {% if recipient.photo %}
+                    <img src="{{ recipient.photo.url }}" alt="{{ recipient.name }}" class="img-fluid">
+                    {% else %}
+                    <i class="fas fa-user"></i>
+                    {% endif %}
+                </div>
+                <p class="recent-recipient-name">{{ recipient.name }}</p>
+            </div>
+            {% empty %}
+            <div class="text-center text-muted w-100">No recent recipients</div>
+            {% endfor %}
+            
+            
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const amountInput = document.getElementById('amount');
+        const transferTypeOptions = document.querySelectorAll('.transfer-type-option');
+        const transferTypeInput = document.getElementById('transfer_type');
+        const otherBankFields = document.querySelector('.other-bank-fields');
+        const summaryAmount = document.getElementById('summary-amount');
+        const summaryFee = document.getElementById('summary-fee');
+        const summaryTotal = document.getElementById('summary-total');
+        const recentRecipients = document.querySelectorAll('.recent-recipient');
+        const beneficiarySearch = document.getElementById('beneficiary_search');
+        const toAccountInput = document.getElementById('to_account');
+        const beneficiaryResults = document.querySelector('.beneficiary-results');
+        
+        // Initialize
+        updateSummary();
+        
+        // Transfer type selection
+        transferTypeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options
+                transferTypeOptions.forEach(opt => opt.classList.remove('selected'));
+                // Add selected class to clicked option
+                this.classList.add('selected');
+                // Update hidden input
+                const type = this.dataset.type;
+                transferTypeInput.value = type;
+                
+                // Show/hide other bank fields
+                if (type === 'other-bank' || type === 'international') {
+                    otherBankFields.style.display = 'block';
+                } else {
+                    otherBankFields.style.display = 'none';
+                }
+                
+                // Update summary
+                updateSummary();
+            });
+        });
+        
+        // Recent recipients selection
+        recentRecipients.forEach(recipient => {
+            recipient.addEventListener('click', function() {
+                const account = this.dataset.account;
+                const name = this.dataset.name;
+                const bank = this.dataset.bank;
+                
+                beneficiarySearch.value = `${name} - ${account}`;
+                toAccountInput.value = account;
+                
+                if (bank !== 'access') {
+                    // Select the Other Banks transfer type
+                    transferTypeOptions.forEach(opt => {
+                        if (opt.dataset.type === 'other-bank') {
+                            opt.click();
+                        }
+                    });
+                    
+                    // Select the bank
+                    const bankSelect = document.getElementById('bank');
+                    if (bankSelect) {
+                        bankSelect.value = bank;
+                    }
+                }
+            });
+        });
+        
+        // Amount input
+        amountInput.addEventListener('input', updateSummary);
+        
+        // Beneficiary search
+        beneficiarySearch.addEventListener('input', function() {
+            const query = this.value.trim();
+            
+            if (query.length >= 3) {
+                // Simulate search results
+                beneficiaryResults.style.display = 'block';
+                beneficiaryResults.innerHTML = `
+                    <div class="recipient-card" data-account="0123456789" data-name="John Okafor">
+                        <div class="recipient-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="recipient-details">
+                            <h6>John Okafor</h6>
+                            <p>Access Bank - 0123456789</p>
+                        </div>
+                    </div>
+                    <div class="recipient-card" data-account="9876543210" data-name="Amina Ibrahim">
+                        <div class="recipient-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="recipient-details">
+                            <h6>Amina Ibrahim</h6>
+                            <p>Access Bank - 9876543210</p>
+                        </div>
+                    </div>
+                `;
+                
+                // Add click event to results
+                const resultCards = beneficiaryResults.querySelectorAll('.recipient-card');
+                resultCards.forEach(card => {
+                    card.addEventListener('click', function() {
+                        const account = this.dataset.account;
+                        const name = this.dataset.name;
+                        
+                        beneficiarySearch.value = `${name} - ${account}`;
+                        toAccountInput.value = account;
+                        beneficiaryResults.style.display = 'none';
+                    });
+                });
+            } else {
+                beneficiaryResults.style.display = 'none';
+            }
+        });
+        
+        // Hide search results when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!beneficiarySearch.contains(event.target) && !beneficiaryResults.contains(event.target)) {
+                beneficiaryResults.style.display = 'none';
+            }
+        });
+        
+        // Function to update the summary
+        function updateSummary() {
+            const amount = parseFloat(amountInput.value) || 0;
+            let fee = 0;
+            const transferType = transferTypeInput.value;
+            
+            // Calculate fee based on transfer type and amount
+            if (transferType === 'access') {
+                // Within Access Bank
+                if (amount > 0) {
+                    fee = 10.00; // Fixed fee for within Access Bank
+                }
+            } else if (transferType === 'other-bank') {
+                // Other banks
+                if (amount > 0) {
+                    fee = Math.min(Math.max(amount * 0.01, 25.00), 100.00); // 1% with min 25.00 and max 100.00
+                }
+            } else if (transferType === 'international') {
+                // International transfers
+                if (amount > 0) {
+                    fee = Math.min(Math.max(amount * 0.02, 100.00), 500.00); // 2% with min 100.00 and max 500.00
+                }
+            }
+            
+            const total = amount + fee;
+            
+            // Update the summary
+            summaryAmount.textContent = amount.toFixed(2);
+            summaryFee.textContent = fee.toFixed(2);
+            summaryTotal.textContent = total.toFixed(2);
+        }
+    });
+</script>
+{% endblock %}

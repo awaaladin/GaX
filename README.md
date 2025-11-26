@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # GAX - Production-Grade Digital Banking + Payment Gateway Platform
 
 A complete, production-ready digital banking and payment gateway system built for Nigeria, featuring wallet management, bill payments, and merchant integration capabilities.
@@ -432,3 +433,6 @@ For support, email: support@gaxbank.com
 - Moniepoint API
 - Django & DRF communities
 - Nigerian fintech ecosystem
+=======
+# GaX
+>>>>>>> 94aebd049445fa132edc98be3f62933007926a47
