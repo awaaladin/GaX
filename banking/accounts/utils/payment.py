@@ -1,14 +1,17 @@
 """
 Payment processing utilities
 Handle wallet operations, transaction processing, and fees
+Integrated with Paystack for virtual accounts and transfers
 """
 import logging
 from decimal import Decimal
 from django.db import transaction as db_transaction
 from django.db.models import F
 from django.utils import timezone
+from django.conf import settings
 from ..models import Wallet, Transaction, PaymentGateway
 from .signature import SignatureVerifier
+from .paystack import get_paystack_client
 
 logger = logging.getLogger(__name__)
 

@@ -189,7 +189,24 @@ CELERY_TASK_EAGER_PROPAGATES = True
 # Email Configuration - Console backend for testing
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Moniepoint Configuration
+# Payment Mode Toggle
+USE_LIVE_PAYMENT = config('USE_LIVE_PAYMENT', default=True, cast=bool)
+
+# Paystack Configuration (PRIMARY PAYMENT GATEWAY)
+PAYSTACK_LIVE_SECRET_KEY = config(
+    'PAYSTACK_LIVE_SECRET_KEY',
+    default='sk_live_placeholder'
+)
+PAYSTACK_LIVE_PUBLIC_KEY = config(
+    'PAYSTACK_LIVE_PUBLIC_KEY',
+    default='pk_live_placeholder'
+)
+PAYSTACK_BASE_URL = config(
+    'PAYSTACK_BASE_URL',
+    default='https://api.paystack.co'
+)
+
+# Moniepoint Configuration (BACKUP)
 MONIEPOINT_SANDBOX_BASE_URL = config(
     'MONIEPOINT_SANDBOX_BASE_URL',
     default='https://sandbox.moniepoint.com'
